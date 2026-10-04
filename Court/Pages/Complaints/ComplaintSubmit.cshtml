@@ -1,0 +1,203 @@
+﻿@page
+@model Court.Pages.Complaints.ComplaintSubmitModel
+@{
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+    </div>
+}
+
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body p-4">
+
+            <ul class="nav nav-tabs mb-4">
+
+                <!-- Complaints -->
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintList") ? "active" : "")"
+                       asp-page="/Complaints/ComplaintList"
+                       asp-route-complaintId="@Model.ComplaintInfo.Id">
+                        Complaints
+                    </a>
+                </li>
+
+                <!-- Documents -->
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Documents/DocumentList") ? "active" : "")"
+                       asp-page="/Documents/DocumentList"
+                       asp-route-complaintId="@Model.ComplaintInfo.Id">
+                        Documents
+                    </a>
+                </li>
+
+                <!-- Submit -->
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintSubmit") ? "active" : "")"
+                       asp-page="/Complaints/ComplaintSubmit"
+                       asp-route-complaintId="@Model.ComplaintInfo.Id">
+                        Submit
+                    </a>
+                </li>
+
+                <!-- Decision -->
+
+         <li class="nav-item">
+          <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintDecision") ? "active" : "")"
+           asp-page="/Complaints/ComplaintDecision"
+           asp-route-complaintId="@Model.ComplaintInfo.Id">
+            Decision
+           </a>
+         </li>
+         
+         <li class="nav-item">
+                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintPetition") ? "active" : "")"
+                       asp-page="/Complaints/ComplaintPetition"
+                    asp-route-complaintId="@Model.ComplaintInfo.Id">
+                        Petition
+                    </a>
+                </li>
+</ul>
+
+             <form method="post" enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="ComplaintInfo.Id" />
+                 <input type="hidden" asp-for="ComplaintInfo.DefendantId" />
+ 
+                  <div class="row mb-3">
+
+    <!-- Complainant Name -->
+                    <div class="col-md-4">
+                        <label class="form-label">
+                            Complainant Name<span style="color:red">*</span>
+                        </label>
+                            <select asp-for="ComplaintInfo.ComplainantId"
+                                    class="form-select"
+                                    id="complainantName">
+
+                                <option value="">-- Select CIPD User --</option>
+
+                                @foreach (var user in Model.ComplainantUsers)
+                                {
+                                    <option value="@user.Id"
+                                            data-signature="@user.UserName">
+                                        @user.UserName
+                                    </option>
+                                }
+
+                            </select>
+                        
+                    </div>
+
+    <!-- Complainant Signature -->
+    <div class="col-md-4">
+    <label class="form-label">
+        Complainant Signature<span style="color:red">*</span>
+    </label>
+
+  
+        <input asp-for="ComplaintInfo.ComplainantSignature"
+               class="form-control signature-input"
+               id="complainantSignature" />
+    
+</div>
+
+
+    <!-- Complainant Phone -->
+    <div class="col-md-4">
+    <label class="form-label">
+        Complainant Phone
+    </label>
+
+ 
+        <input asp-for="ComplaintInfo.ComplainantPhone"
+               class="form-control" />
+    
+</div>
+
+</div>
+
+
+<div class="row mb-3">
+
+    <div class="col-md-4">
+    <label class="form-label">
+        Badge Number
+    </label>
+        <input asp-for="ComplaintInfo.BadgeNumber"
+               class="form-control" />
+    
+</div>
+
+    <div class="col-md-4 d-flex align-items-end">
+    <div class="form-check mb-2">
+
+      
+            <input asp-for="ComplaintInfo.ReadyForApproval"
+                   class="form-check-input" />
+        
+
+        <label class="form-check-label">
+            Ready for Approval
+        </label>
+    </div>
+</div>
+
+</div>
+  
+
+                    <!-- Buttons - Bottom Right -->
+@if (!Model.ComplaintInfo.ReadyForApproval)
+{
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="submit"
+                class="btn btn-primary">
+            Save
+        </button>
+    </div>
+}
+
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .signature-input {
+         font-style: italic;
+         font-family: cursive;
+         font-size: 20px;
+        }
+</style>
+
+<script>
+    var complainantName = document.getElementById("complainantName");
+
+    if (complainantName) {
+        complainantName.addEventListener("change", function () {
+
+            var selectedOption = this.options[this.selectedIndex];
+
+            var signature = selectedOption.getAttribute("data-signature");
+
+            document.getElementById("complainantSignature").value = signature || "";
+        });
+    }
+
+    // showing submit tab
+
+</script>
+
+         
+
+

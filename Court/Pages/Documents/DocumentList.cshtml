@@ -1,0 +1,113 @@
+﻿@page
+@model Court.Pages.Documents.DocumentListModel
+@{
+}
+
+         <ul class="nav nav-tabs mb-4">
+
+                <!-- Complaints -->
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintList") ? "active" : "")"
+                       asp-route-complaintId="@Model.ComplaintId"
+                       asp-page="/Complaints/ComplaintList">
+                        Complaints
+                    </a>
+                </li>
+
+                <!-- Documents -->
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Documents/DocumentList") ? "active" : "")"
+                       asp-route-complaintId="@Model.ComplaintId"
+                       asp-page="/Documents/DocumentList">
+                        Documents
+                    </a>
+                </li>
+
+                <!-- Submit -->
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintSubmit") ? "active" : "")"
+                       asp-page="/Complaints/ComplaintSubmit"
+                       asp-route-complaintId="@Model.ComplaintId">
+                        Submit
+                    </a>
+                </li>
+
+                <!-- Decision -->
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintDecision") ? "active" : "")"
+                       asp-page="/Complaints/ComplaintDecision">
+                        Decision
+                    </a>
+                </li>
+    <li class="nav-item">
+        <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintDecision") ? "active" : "")"
+           asp-page="/Complaints/ComplaintPetition">
+            Petition
+        </a>
+    </li>
+            </ul>
+
+            <!-- Documents Content -->
+            <h3 class="text-center mb-4">Documents</h3>
+
+<a asp-page="/Documents/Document"
+asp-route-complaintId="@Model.ComplaintId"
+   target="_blank"
+   class="btn btn-success">
+    Add Document
+</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Document Date</th>
+            <th>Document Name</th>
+            <th>Document Type</th>
+            <th>Document</th>
+            <th>Comments</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var document in Model.Documents)
+        {
+            <tr>
+                <td>@document.DocumentDate</td>
+                <td>@document.DocumentName</td>
+                <td>@document.DocumentType</td>
+                <td>
+                      <a asp-page-handler="ViewDocument"
+                         asp-route-id="@document.Id"
+                         target="_blank"
+                         class="btn btn-sm btn-primary">
+                           View
+                         </a>
+                </td>
+                <td>@document.Comments</td>
+
+
+                <td>
+                    <a asp-page="/Documents/Document"
+                       asp-route-id="@document.Id"
+                        asp-route-ComplaintId="@Model.ComplaintId"
+                       class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    <form method="post"
+                          asp-page-handler="Delete"
+                          asp-route-id="@document.Id"
+                          asp-route-ComplaintId="@Model.ComplaintId"
+                          style="display:inline;">
+                        <button type="submit"
+                                class="btn btn-sm btn-danger"
+                                onclick="return confirm('Are you sure you want to delete this complaint?');">
+                            Delete
+                        </button>
+                    </form>
+                </td> 
+            </tr>
+        }
+    </tbody> 
+</table>

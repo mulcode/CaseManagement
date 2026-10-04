@@ -1,0 +1,394 @@
+﻿@page "/Defendants"
+@model Court.Pages.Defendants.DefendantModel
+@using CourtDomain.Enums
+@{
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+        <div class="card-body p-4">
+
+            <h2 class="text-center mb-4">Defendant Information</h2>
+
+            <form method="post" enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="DefendantInfo.Id" />
+                <!-- First Row -->
+                <div class="row mb-3">
+
+                    <div class="col-md-4">
+                        <label for="cDate" class="form-label">
+                            Date<span style="color:red">*</span>
+                        </label>
+                        <input asp-for="DefendantInfo.Date" type="date"
+                             
+                               class="form-control"
+                               required >
+                               <span asp-validation-for="DefendantInfo.Date"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="Time" class="form-label">
+                            Time
+                        </label>
+                        <input type="time"
+                               asp-for="DefendantInfo.Time"
+                               class="form-control">
+                    </div>
+
+                </div>
+
+
+                <!-- Second Row -->
+                <div class="row mb-3">
+
+                    <div class="col-md-4">
+                        <label for="FirstName" class="form-label">
+                            First Name<span style="color:red">*</span>
+                        </label>
+                        <input type="text"
+                               asp-for="DefendantInfo.FirstName"
+                               class="form-control"
+                               required >
+                               <span asp-validation-for="DefendantInfo.FirstName" class ="text-danger small" ></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="MiddleName" class="form-label">
+                            Middle Name
+                        </label>
+                        <input type="text"
+                               asp-for="DefendantInfo.MiddleName"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="LastName" class="form-label">
+                            Last Name<span style="color:red">*</span>
+                        </label>
+                        <input type="text"
+                               asp-for="DefendantInfo.LastName"
+                               class="form-control"
+                               required >
+                               <span asp-validation-for="DefendantInfo.LastName" class ="text-danger small"></span>
+                    </div>
+
+                </div>
+
+               
+                <!-- Third Row -->
+                <div class="row mb-3">
+
+                    <!-- Suffix -->
+                    <div class="col-md-4">
+                        <label for="Suffix" class="form-label">
+                            Suffix
+                        </label>
+
+                        <select asp-for="DefendantInfo.Suffix"
+                        asp-items ="Html.GetEnumSelectList<Suffix>()"
+                                class="form-select">
+
+                            <option value="">Select Suffix</option>
+                            
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="Nickname" class="form-label">
+                            Nickname
+                        </label>
+
+                        <input type="text"
+                               asp-for="DefendantInfo.NickName"
+                               class="form-control">
+                    </div>
+
+                </div>
+
+                <!-- Fourth row -->
+                <div class="row mb-3">
+
+                    <div class="col-md-4">
+                        <label for="cDate" class="form-label">
+                            Date of Birth
+                        </label>
+                        <input type="date"
+                               asp-for="DefendantInfo.DateOfBirth"
+                               class="form-control" >
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="gender" class="form-label">
+                            Gender
+                        </label>
+
+                        <select asp-for="DefendantInfo.Gender"
+                        asp-items ="Html.GetEnumSelectList<Gender>()"
+                                class="form-select">
+
+                            <option value="">Select gender</option>
+                            
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Fifth Row -->
+                <div class="row mb-3">
+
+                    <div class="col-md-4">
+                        <div class="form-check mt-4">
+                            <input type="checkbox"
+                                   asp-for="DefendantInfo.IsEnrolled"
+                                   class="form-check-input">
+
+                            <label for="IsEnrolledInTribe"
+                                   class="form-check-label">
+                                Is enrolled in tribe
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="EBCIEnrolledNumber"
+                               class="form-label">
+                            EBCI Enrolled Number
+                        </label>
+
+                        <input type="text"
+                               asp-for="DefendantInfo.EnrolledNumber"
+                               class="form-control">
+                    </div>
+
+                </div>
+               
+                <!-- sixth Row -->
+                <div class="row mb-3">
+
+                    <div class="col-md-4">
+                        <div class="form-check mt-4">
+                            <input type="checkbox"
+                                   asp-for="DefendantInfo.EnrolledOther"
+                                   class="form-check-input">
+
+                            <label for="IsEnrolledInTribe"
+                                   class="form-check-label">
+                                Enrolled in other tribe
+                            </label>
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-md-8">
+                        <label for="affiliationName"
+                               class="form-label">
+                            Tribe Affiliation Name
+                        </label>
+
+                        <input type="text"
+                               asp-for="DefendantInfo.AffiliationName"
+                               class="form-control">
+                    </div>
+
+                </div>
+               
+                <div class="row mb-3">
+
+                    <div class="col-md-8">
+                        <label for="Address" class="form-label">
+                            Address
+                        </label>
+                        <input type="text"
+                               asp-for="DefendantInfo.Address"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="City" class="form-label">
+                            City
+                        </label>
+                        <input type="text"
+                               asp-for="DefendantInfo.City"
+                               class="form-control">
+                    </div>
+
+                </div>
+
+                
+                <div class="row mb-3">
+
+                    <!-- State -->
+                    <div class="col-md-4">
+                        <label for="State" class="form-label">
+                            State
+                        </label>
+
+                        <select asp-for="DefendantInfo.State"
+                                asp-items ="Html.GetEnumSelectList<State>()"
+                                class="form-select">
+
+                            <option value="">Select State</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="Zipcode" class="form-label">
+                            Zip Code
+                        </label>
+
+                        <input type="text"
+                               asp-for="DefendantInfo.ZipCode"
+                               class="form-control">
+                    </div>
+
+                </div>
+               
+
+                <div class="row mb-3">
+
+                    <div class="col-md-8">
+                        <label for="EmpName" class="form-label">
+                            Employer Name
+                        </label>
+                        <input type="text"
+                               asp-for="DefendantInfo.EmployerName"
+                               class="form-control">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="EmpCity" class="form-label">
+                            Employer Phone
+                        </label>
+                        <input type="text"
+                               asp-for="DefendantInfo.Phone"
+                               class="form-control">
+                    </div>
+
+                </div>
+
+              
+                <div class="row mb-3">
+
+                    <div class="col-md-4">
+                        <label for="Picture" class="form-label">
+                            Upload Picture
+                        </label>
+
+                        <input type="file"
+                               asp-for="ImageFile"
+                               class="form-control"
+                               accept="image/*">
+                    </div>
+
+                </div> 
+              
+                <!-- Second Section -->
+                <div class="mt-5 pt-4 border-top">
+
+                    <h4 class="mb-4">
+                        Note
+                    </h4>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-4">
+
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="ApproachWithCaution"
+                                       name="ApproachWithCaution"
+                                       class="form-check-input">
+
+                                <label for="ApproachWithCaution"
+                                       class="form-check-label">
+                                    Approach With Caution
+                                </label>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                     <h4 class="mb-4">
+                        Complainant Information
+                    </h4>
+
+
+ 
+                    <div class="row mb-3">
+
+                        <div class="col-md-6">
+                            <label for="PhAddress" class="form-label">
+                                Physical Address
+                            </label>
+
+                            <input type="text"
+                                   asp-for="DefendantInfo.PhysicalAddress"
+                                   class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="phState" class="form-label">
+                                Physical State, City, Zip
+                            </label>
+
+                            <input type="text"
+                                   asp-for="DefendantInfo.PhysicalZip"
+                                   class="form-control">
+                        </div>
+
+                    </div>
+
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-6">
+                            <label for="mailingAdd" class="form-label">
+                                Mailing Address
+                            </label>
+
+                            <input type="tel"
+                                   asp-for="DefendantInfo.MailingAddress"
+                                   class="form-control">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="mailingCom" class="form-label">
+                                Mailing State, City, Zip
+                            </label>
+
+                            <input type="email"
+                                  asp-for="DefendantInfo.MailingCity"
+                                   class="form-control">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                    <!-- Buttons - Bottom Right -->
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+
+                        <button type="button"
+                                class="btn btn-secondary">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Save
+                        </button>
+
+                    </div>
+
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

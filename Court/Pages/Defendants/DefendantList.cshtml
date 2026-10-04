@@ -1,0 +1,157 @@
+﻿@page "/DefendantList"
+@model Court.Pages.Defendants.DefendantListModel
+@{
+}
+@using System.Security.Claims
+
+
+
+<h2 class="mb-4">Defendant List</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Gender</th>
+            <th>City</th>
+            <th>Image</th>
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var defendant in Model.Defendants)
+        {
+            <tr>
+                <td>@defendant.FirstName</td>
+                <td>@defendant.LastName</td>
+                <td>@defendant.Gender</td>
+                <td>@defendant.City</td>
+                <td>
+                    @if (defendant.Picture != null)
+                    {
+                        <img src="?handler=Image&id=@defendant.Id"
+                             width="100"
+                             height="100"
+                             style="object-fit: cover;" />
+                    }
+                </td>
+
+                <td>
+                    <a asp-page="/Defendants/Defendant"
+                       asp-route-id="@defendant.Id"
+                       class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    <form method="post"
+                          asp-page-handler="Delete"
+                          asp-route-id="@defendant.Id"
+                          style="display:inline;">
+                        <button type="submit"
+                                class="btn btn-sm btn-danger"
+                                onclick="return confirm('Are you sure you want to delete this defendant?');">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <a asp-page="/Complaints/ComplaintList"
+                       asp-route-id="@defendant.Id"
+                       class="btn btn-sm bg-info text-white">
+                        Complaints
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Defendant pagination">
+    <ul class="pagination">
+
+        <!-- Previous -->
+        <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Defendants/DefendantList"
+               asp-route-pageNumber="@(Model.PageNumber - 1)">
+                Previous
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        @for (int i = 1; i <= Model.TotalPage; i++)
+        {
+            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                <a class="page-link"
+                   asp-page="/Defendants/DefendantList"
+                   asp-route-pageNumber="@i">
+                    @i
+                </a>
+            </li>
+        }
+
+        <!-- Next -->
+        <li class="page-item @(Model.PageNumber == Model.TotalPage ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Defendants/DefendantList"
+               asp-route-pageNumber="@(Model.PageNumber + 1)">
+                Next
+            </a>
+        </li>
+
+    </ul>
+</nav>
+
+<a asp-page="/Defendants/Defendant"
+   target="_blank"
+   class="btn btn-success">
+    Create Defendant
+</a>
+
+
+
+
+
+@if (TempData["LoginSuccess"] != null)
+{
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+
+        <div id="loginToast"
+             class="toast"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true">
+
+            <div class="toast-header">
+                <strong class="me-auto">Login</strong>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="toast">
+                </button>
+            </div>
+
+            <div class="toast-body">
+                Login successful!
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            var toastElement = document.getElementById("loginToast");
+
+            var toast = new bootstrap.Toast(toastElement, {
+                delay: 2000
+            });
+
+            toast.show();
+        });
+    </script>
+}
+

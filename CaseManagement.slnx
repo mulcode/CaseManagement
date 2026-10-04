@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Court/Court.csproj" />
+  <Project Path="CourtDataAccess/CourtDataAccess.csproj" />
+  <Project Path="CourtDomain/CourtDomain.csproj" />
+</Solution>

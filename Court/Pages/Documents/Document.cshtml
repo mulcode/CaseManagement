@@ -1,0 +1,114 @@
+﻿@page
+@model Court.Pages.Documents.DocumentModel
+@{
+}
+@using CourtDomain.Enums
+
+
+<div class="container mt-5" >
+    <div class="card shadow">
+        <div class="card-body p-4">
+
+            <h4 class="text-center text-secondary">Document Information</h4>
+
+  <form method="post" enctype="multipart/form-data">
+
+     <input type="hidden" asp-for="DocumentInfo.ComplaintId" />
+     <input type="hidden" asp-for="DocumentInfo.Id" /> 
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <label class="form-label">
+               Document Date<span style="color:red">*</span>
+            </label>
+
+            <input type="date"
+                   asp-for ="DocumentInfo.DocumentDate"
+                   class="form-control"
+                    />
+
+            <span asp-validation-for="DocumentInfo.DocumentDate"
+                  class="text-danger small"></span> 
+        </div>
+
+          <div class="col-md-4">
+            <label class="form-label">
+                Document Name<span style="color:red">*</span>
+            </label>
+
+            <input type="text"
+                 asp-for ="DocumentInfo.DocumentName"
+                   class="form-control"
+                    />
+
+            <span asp-validation-for="DocumentInfo.DocumentName"
+                  class="text-danger small"></span> 
+        </div>
+
+    </div>
+
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <label class="form-label">
+                Document Type<span style="color:red">*</span>
+            </label>
+
+            <select asp-for="DocumentInfo.DocumentType"
+                    asp-items="Html.GetEnumSelectList<DocumentType>()"
+                    class="form-select">
+
+                <option value="">Select Document Type</option>
+
+            </select>
+
+            <span asp-validation-for="DocumentInfo.DocumentType"
+                  class="text-danger small"></span> 
+        </div>
+
+      
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Document
+                    </label>
+
+                    <input type="file"
+                         asp-for ="DocFile"
+                           class="form-control"
+                           >
+                </div>
+    </div>
+
+    <div class="row mb-3">
+
+        <div class="col-md-6">
+            <label class="form-label">
+                Comments
+            </label>
+
+            <textarea class="form-control"
+             asp-for ="DocumentInfo.Comments"></textarea>
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+
+        <button type="button"
+                class="btn btn-secondary">
+            Cancel
+        </button>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Save
+        </button>
+
+    </div>
+
+</form>
+        </div>
+    </div>
+</div>

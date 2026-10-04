@@ -1,0 +1,47 @@
+﻿@page "/Login"
+@model Court.Pages.Login.LoginModel
+@{
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow mt-5">
+                <div class="card-body p-6">
+
+                    <h2 class="text-center mb-4">Login</h2>
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="UserName" class="form-label">User Name</label>
+                            <input asp-for="UserName"  class="form-control" id="UserName" required>
+                            <span asp-validation-for="UserName" class ="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Password" class="form-label">Password</label>
+                            <input asp-for="Password" class="form-control" id="Password" required>
+                            <span asp-validation-for="Password" class ="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+
+                        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                        {
+                            <div class="alert alert-danger">
+                                @Model.ErrorMessage
+                            </div>
+                        }
+                        
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

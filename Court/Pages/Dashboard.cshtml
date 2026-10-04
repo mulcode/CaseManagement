@@ -1,0 +1,166 @@
+﻿@page
+@model Court.Pages.DashboardModel
+@{
+}
+
+@if (TempData["LoginSuccess"] != null)
+{
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+
+        <div id="loginToast"
+             class="toast"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true">
+
+            <div class="toast-header">
+                <strong class="me-auto">Login</strong>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="toast">
+                </button>
+            </div>
+
+            <div class="toast-body">
+                Login successful!
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            var toastElement = document.getElementById("loginToast");
+
+            var toast = new bootstrap.Toast(toastElement, {
+                delay: 2000
+            });
+
+            toast.show();
+        });
+    </script> 
+}
+
+<div class="container-fluid mt-3">
+
+    <div class="card shadow-sm">
+
+        <!-- Header -->
+        <div class="card-header p-0 border-0">
+
+            <div class="d-flex align-items-center">
+
+                <div class="bg-info text-white fw-bold px-3 py-2">
+                    Defendant Complaints Awaiting Submission
+                </div>
+
+                <div class="bg-success text-white fw-bold px-3 py-2">
+                    @Model.Defendants.Count()
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Search -->
+        <div class="card-body p-2">
+
+            <div class="d-flex justify-content-end mb-2">
+
+                <input type="text"
+                       id="searchInput"
+                       class="form-control"
+                       placeholder="Search..."
+                       style="width: 145px;" />
+
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+
+                <table class="table table-striped table-bordered mb-0"
+                       id="defendantTable">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>Date</th>
+                            <th>Defendant Name</th>
+                            <th>Complaint Type</th>
+                            <th>Complainant Name</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                          @foreach (var item in Model.Defendants)
+                        {
+                            <tr>
+
+                                <td>
+                                    @item.Date.ToString("MMM-dd-yyyy")
+                                </td>
+
+                                <td>
+                                    @item.DefendantName
+                                </td>
+
+                                <td>
+                                    @item.ComplaintType
+                                </td>
+
+                                <td>
+                                    @item.ComplainantName
+                                </td>
+
+                                <td>
+                                    <a asp-page="/Complaints/ComplaintSubmit"
+                                       asp-route-complaintId="@item.ComplaintId"
+                                       class="btn btn-primary btn-sm">
+                                        Submission
+                                    </a>
+                                </td>
+
+                            </tr>
+                        } 
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.getElementById("searchInput").addEventListener("keyup", function() {
+
+var searchValue = this.value.toLowerCase();
+
+var rows = document.querySelectorAll("#defendantTable tbody tr");
+
+rows.forEach(function(row) {
+
+var rowText = row.innerText.toLowerCase();
+
+if (rowText.includes(searchValue)) {
+row.style.display = "";
+}
+else {
+row.style.display = "none";
+}
+
+});
+
+});
+</script>
