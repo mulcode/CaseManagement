@@ -3,6 +3,7 @@
 @{
 }
 
+
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -14,67 +15,63 @@
     </div>
 }
 
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger decision-warning">
+        @Model.ErrorMessage
+    </div>
+}
+
+<!-- Decision Modal -->
+<div class="modal fade" id="decisionModal" tabindex="-1" aria-labelledby="decisionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body">
+                Approve the Complaint First
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <div class="container mt-5">
     <div class="card shadow">
         <div class="card-body p-4">
 
-            <ul class="nav nav-tabs mb-4">
-
-                <!-- Complaints -->
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintList") ? "active" : "")"
-                       asp-page="/Complaints/ComplaintList"
-                       asp-route-complaintId="@Model.ComplaintInfo.Id">
-                        Complaints
-                    </a>
-                </li>
-
-                <!-- Documents -->
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Documents/DocumentList") ? "active" : "")"
-                       asp-page="/Documents/DocumentList"
-                       asp-route-complaintId="@Model.ComplaintInfo.Id">
-                        Documents
-                    </a>
-                </li>
-
-                <!-- Submit -->
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintSubmit") ? "active" : "")"
-                       asp-page="/Complaints/ComplaintSubmit"
-                       asp-route-complaintId="@Model.ComplaintInfo.Id">
-                        Submit
-                    </a>
-                </li>
-
-                <!-- Decision -->
-
-         <li class="nav-item">
-          <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintDecision") ? "active" : "")"
-           asp-page="/Complaints/ComplaintDecision"
-           asp-route-complaintId="@Model.ComplaintInfo.Id">
-            Decision
-           </a>
-         </li>
-         
-         <li class="nav-item">
-                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintPetition") ? "active" : "")"
-                       asp-page="/Complaints/ComplaintPetition"
-                    asp-route-complaintId="@Model.ComplaintInfo.Id">
-                        Petition
-                    </a>
-                </li>
-</ul>
+         <partial name="_ComplaintTabs"
+         model="new Court.ViewModels.ComplaintTabsViewModels
+         {
+             ComplaintId = Model.ComplaintInfo.Id,
+             IsSubmitted = Model.ComplaintInfo.ReadyForApproval,
+             IsDecisionSaved = Model.ComplaintInfo.MagistrateDecision.HasValue
+         }" />
 
              <form method="post" enctype="multipart/form-data">
 
                 <input type="hidden" asp-for="ComplaintInfo.Id" />
                  <input type="hidden" asp-for="ComplaintInfo.DefendantId" />
+                 <input type="hidden" asp-for="ComplaintInfo.Date" />
  
                   <div class="row mb-3">
 
-    <!-- Complainant Name -->
+                  <!-- Complainant Name -->
                     <div class="col-md-4">
                         <label class="form-label">
                             Complainant Name<span style="color:red">*</span>
@@ -116,8 +113,6 @@
     <label class="form-label">
         Complainant Phone
     </label>
-
- 
         <input asp-for="ComplaintInfo.ComplainantPhone"
                class="form-control" />
     
@@ -172,12 +167,22 @@
 </div>
 
 
+
 <style>
     .signature-input {
          font-style: italic;
          font-family: cursive;
          font-size: 20px;
         }
+        .decision-warning {
+        background-color: #dc3545;
+        color: white;
+        padding: 6px 12px;
+        margin-top: 5px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+        text-align: center;
+    }
 </style>
 
 <script>
@@ -196,8 +201,26 @@
 
     // showing submit tab
 
+
+    function openDecision(complaintId) {
+
+        fetch('/Complaints/ComplaintSubmit?handler=CheckDecision&complaintId=' + complaintId)
+            .then(response => response.json())
+            .then(data => {
+
+                if (data.readyForApproval) {
+
+                    window.location.href =
+                        '/Complaints/ComplaintDecision?complaintId=' + complaintId;
+
+                } else {
+
+                    var decisionModal = new bootstrap.Modal(
+                        document.getElementById('decisionModal')
+                    );
+
+                    decisionModal.show();
+                }
+            });
+    }
 </script>
-
-         
-
-

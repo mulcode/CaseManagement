@@ -1,0 +1,72 @@
+﻿@model Court.ViewModels.ComplaintTabsViewModels
+
+@{
+    var currentPage = ViewContext.HttpContext.Request.Path.Value;
+}
+
+<ul class="nav nav-tabs mb-4">
+
+    <!-- Complaints -->
+    <li class="nav-item">
+        <a class="nav-link @(currentPage?.Equals("/Complaints/Complaint", StringComparison.OrdinalIgnoreCase) == true ? "active" : "")"
+           asp-page="/Complaints/Complaint"
+           asp-route-id="@Model.ComplaintId">
+            Complaints
+        </a>
+    </li>
+
+    <!-- Documents -->
+    @if(Model.ComplaintId > 0)
+    {
+         <li class="nav-item">
+        <a class="nav-link @(currentPage?.Equals("/Documents/Document", StringComparison.OrdinalIgnoreCase) == true ? "active" : "")"
+           asp-page="/Documents/Document"
+           asp-route-complaintId="@Model.ComplaintId">
+            Documents
+        </a>
+    </li>
+    }
+   
+
+    <!-- Submit -->
+    @if(Model.ComplaintId > 0)
+    {
+         <li class="nav-item">
+        <a class="nav-link @(currentPage?.Equals("/Complaints/ComplaintSubmit", StringComparison.OrdinalIgnoreCase) == true ? "active" : "")"
+           asp-page="/Complaints/ComplaintSubmit"
+           asp-route-complaintId="@Model.ComplaintId">
+            Submit
+        </a>
+    </li>
+    }
+   
+
+    <!-- Decision -->
+    @if(Model.ComplaintId > 0)
+    {
+         <li class="nav-item">
+            <a class="nav-link @(currentPage?.Equals("/Complaints/ComplaintDecision", StringComparison.OrdinalIgnoreCase) == true ? "active" : "")"
+               asp-page="/Complaints/ComplaintDecision"
+               asp-route-complaintId="@Model.ComplaintId">
+                Decision
+            </a>
+        </li>
+    }
+   
+    
+
+    <!-- Petition -->
+    @if (Model.ComplaintId > 0)
+    {
+        <li class="nav-item">
+               @* <a class="nav-link @(currentPage?.Equals("/Complaints/ComplaintDecision", StringComparison.OrdinalIgnoreCase) == true ? "active" : "")" *@
+            <a class="nav-link @(currentPage?.Equals("/Petitions/Petition", StringComparison.OrdinalIgnoreCase) == true ? "active" : "")"
+               asp-page="/Petitions/Petition" 
+               @* asp-page="/Complaints/ComplaintDecision" *@
+               asp-route-complaintId="@Model.ComplaintId">
+                Petition
+            </a>
+        </li>
+    }
+
+</ul>

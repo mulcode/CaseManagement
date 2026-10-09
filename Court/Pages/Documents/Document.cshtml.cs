@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 
+
 namespace Court.Pages.Documents
 {
     public class DocumentModel : PageModel
@@ -53,8 +54,10 @@ namespace Court.Pages.Documents
                 DocFile.CopyTo(memoryStream);
 
                 DocumentInfo.UploadDocument = memoryStream.ToArray();
+                DocumentInfo.FileContentType = DocFile.ContentType;
 
                 d_document.AddDocument(DocumentInfo);
+                TempData["SuccessMessage"] = "Document Saved Successfully";
             }
             else
             {
@@ -77,13 +80,17 @@ namespace Court.Pages.Documents
                     DocFile.CopyTo(memoryStream);
 
                     existingDocument.UploadDocument = memoryStream.ToArray();
+                    existingDocument.FileContentType = DocFile.ContentType;
                 }
 
                 d_document.UpdateDocument(existingDocument);
+
+                TempData["SuccessMessage"] = "Document Updated Successfully";
             }
 
-            return RedirectToPage("/Documents/DocumentList", new
+            return RedirectToPage("/Documents/Document", new
             {
+                id = DocumentInfo.Id,
                 complaintId = DocumentInfo.ComplaintId
             });
         }

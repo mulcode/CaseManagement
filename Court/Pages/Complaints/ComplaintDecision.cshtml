@@ -14,138 +14,109 @@
         </button>
     </div>
 }
+@if (!Model.ComplaintInfo.ReadyForApproval)
+{
+    <div class="alert alert-danger decision-warning">
+        Please submit the complaint first.
+    </div>
+}
 
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger decision-warning">
+        @Model.ErrorMessage
+    </div>
+}
 
 <div class="container mt-5">
     <div class="card shadow">
         <div class="card-body p-4">
 
-            <ul class="nav nav-tabs mb-4">
+            <partial name="_ComplaintTabs"
+                     model="new Court.ViewModels.ComplaintTabsViewModels
+                     {
+                         ComplaintId = Model.ComplaintInfo.Id,
+                         IsSubmitted = Model.ComplaintInfo.ReadyForApproval,
+                         IsDecisionSaved = Model.ComplaintInfo.MagistrateDecision.HasValue
+                     }" />
 
-                <!-- Complaints -->
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintList") ? "active" : "")"
-                       asp-page="/Complaints/ComplaintList"
-                    asp-route-complaintId="@Model.ComplaintInfo.Id">
-                        Complaints
-                    </a>
-                </li>
+           
+           
 
-                <!-- Documents -->
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Documents/DocumentList") ? "active" : "")"
-                       asp-page="/Documents/DocumentList"
-                    asp-route-complaintId="@Model.ComplaintInfo.Id">
-                        Documents
-                    </a>
-                </li>
-
-                <!-- Submit -->
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintSubmit") ? "active" : "")"
-                       asp-page="/Complaints/ComplaintSubmit"
-                    asp-route-complaintId="@Model.ComplaintInfo.Id">
-                        Submit
-                    </a>
-                </li>
-
-                <!-- Decision -->
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintDecision") ? "active" : "")"
-                       asp-page="/Complaints/ComplaintDecision"
-                    asp-route-complaintId="@Model.ComplaintInfo.Id">
-                        Decision
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Complaints/ComplaintPetition") ? "active" : "")"
-                       asp-page="/Complaints/ComplaintPetition"
-                       asp-route-complaintId="@Model.ComplaintInfo.Id">
-                        Petition
-                    </a>
-                </li>
-            </ul>
-
-            
-             <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data">
 
                 <input type="hidden" asp-for="ComplaintInfo.Id" />
-                 <input type="hidden" asp-for="ComplaintInfo.DefendantId" />
- 
-                  <div class="row mb-3">
+
+                <div class="row mb-3">
 
                     <div class="col-md-4">
                         <label class="form-label">
-                            Magistrate Name
-                        </label>   
-                          <select asp-for="ComplaintInfo.MagistrateId"
-                                    class="form-select"
-                                    id="magistrateName">
+                            Magistrate Name<span style="color:red">*</span>
+                        </label>
+                        <select asp-for="ComplaintInfo.MagistrateId"
+                                class="form-select"
+                                id="magistrateName">
 
-                                <option value="">-- Select User --</option>
+                            <option value="">-- Select User --</option>
 
-                                @foreach (var user in Model.Users)
-                                {
-                                    <option value="@user.Id"
-                                            data-signature="@user.UserName">
-                                        @user.UserName
-                                    </option>
-                                }
+                            @foreach (var user in Model.Users)
+                            {
+                                <option value="@user.Id"
+                                        data-signature="@user.UserName">
+                                    @user.UserName
+                                </option>
+                            }
 
-                            </select>
+                        </select>
                     </div>
 
-    <!-- Complainant Signature -->
-    <div class="col-md-4">
-    <label class="form-label">
-        Magistrate Signature
-    </label>
-        <input asp-for="ComplaintInfo.MagistrateSignature"
-               class="form-control signature-input"
-               id="magistrateSignature"
-                />
-</div>
-
-
-    <!-- Complainant Phone -->
-    <div class="col-md-4">
-    <label class="form-label">
-        Date Received By Magistrate
-    </label>
-
-        <input asp-for="ComplaintInfo.ReceivedDateByMagistrate"
-               class="form-control"
-               />
-</div>
-
-</div>
-
-
-<div class="row mb-3">
-  <div class="col-md-6">
+                    <!-- Complainant Signature -->
+                    <div class="col-md-4">
                         <label class="form-label">
-                            Magistrate Decision
-                        </label>   
-                            <select asp-for="ComplaintInfo.MagistrateDecision"
-                              asp-items="Html.GetEnumSelectList<Decision>()"
-                                    class="form-select"
-                                    >
-                                    <option value="">
-                                    </option>
-                                
-                            </select>
+                            Magistrate Signature<span style="color:red">*</span>
+                        </label>
+                        <input asp-for="ComplaintInfo.MagistrateSignature"
+                               class="form-control signature-input"
+                               id="magistrateSignature" />
                     </div>
 
-              </div>
+
+                    <!-- Complainant Phone -->
+                    <div class="col-md-4">
+                        <label class="form-label">
+                            Date Received By Magistrate
+                        </label>
+
+                        <input asp-for="ComplaintInfo.ReceivedDateByMagistrate"
+                               class="form-control" />
+                    </div>
+
+                </div>
+
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            Magistrate Decision<span style="color:red">*</span>
+                        </label>
+                        <select asp-for="ComplaintInfo.MagistrateDecision"
+                                asp-items="Html.GetEnumSelectList<Decision>()"
+                                class="form-select">
+                            <option value="">-- Select Decision --</option>
+                        </select>
+                    </div>
+
+                </div>
+
   
-
-
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <button type="submit"
-                class="btn btn-primary">
-            Save
-        </button>
-    </div>
+                @if (Model.ComplaintInfo.ReadyForApproval && !Model.ComplaintInfo.MagistrateDecision.HasValue)
+                {
+                    <div class="d-flex justify-content-end gap-2 mt-2">
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                    </div>
+                }
             </form>
         </div>
     </div>
@@ -153,10 +124,20 @@
 
 <style>
     .signature-input {
-         font-style: italic;
-         font-family: cursive;
-         font-size: 20px;
-        }
+        font-style: italic;
+        font-family: cursive;
+        font-size: 20px;
+    }
+
+    .decision-warning {
+        background-color: #dc3545;
+        color: white;
+        padding: 6px 12px;
+        margin-top: 5px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+        text-align: center;
+    }
 </style>
 
 <script>

@@ -1,46 +1,117 @@
 ﻿using CourtDataAccess.DbModel;
 using CourtDataAccess.Interfaces;
 using CourtDomain.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CourtDataAccess.Managers
 {
     public class DocumentManager : IDocument
     {
         private readonly AppDbContext _context;
-        public DocumentManager(AppDbContext context)
+        private readonly ILogger<DocumentManager> _logger;
+
+        public DocumentManager(
+            AppDbContext context,
+            ILogger<DocumentManager> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public List<Document> GetAllDocument()
         {
-            return _context.Documents.ToList();
+            try
+            {
+                return _context.Documents.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error getting all documents.");
+
+                throw;
+            }
         }
+
         public Document GetDocument(int id)
         {
-            return _context.Documents.FirstOrDefault(d => d.Id == id);
+            try
+            {
+                return _context.Documents
+                    .Include(x => x.Complaint)
+                    .FirstOrDefault(x => x.Id == id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error getting DocumentId {DocumentId}",
+                    id);
+
+                throw;
+            }
         }
+
         public void AddDocument(Document document)
         {
-            _context.Documents.Add(document);
-            _context.SaveChanges();
+            try
+            {
+                _context.Documents.Add(document);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error adding document.");
+
+                throw;
+            }
         }
+
         public void UpdateDocument(Document document)
         {
-            _context.Documents.Update(document);
-            _context.SaveChanges();
+            try
+            {
+                _context.Documents.Update(document);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error updating DocumentId {DocumentId}",
+                    document.Id);
+
+                throw;
+            }
         }
+
         public void DeleteDocument(int id)
         {
-            var document = _context.Documents.FirstOrDefault(d => d.Id == id);
-            if (document != null)
+            try
             {
-                _context.Documents.Remove(document);
-                _context.SaveChanges();
+                var document = _context.Documents
+                    .FirstOrDefault(d => d.Id == id);
+
+                if (document != null)
+                {
+                    _context.Documents.Remove(document);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error deleting DocumentId {DocumentId}",
+                    id);
+
+                throw;
             }
         }
     }
 }
+

@@ -21,11 +21,12 @@ namespace CourtDomain.Models
 
 
         public DocumentType DocumentType { get; set; }
-
+        public string FileContentType { get; set; }
 
         public byte[] UploadDocument { get; set; }
 
         public string Comments { get; set; }
+
         public int ComplaintId { get; set; }
 
         public virtual Complaint Complaint { get; set; }

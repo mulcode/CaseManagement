@@ -30,10 +30,11 @@ namespace Court.Pages.Login
         public string ErrorMessage { get; set; }
 
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            
+            await HttpContext.SignOutAsync("MyCookie");
         }
+
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -50,17 +51,27 @@ namespace Court.Pages.Login
                 return Page();
             }
 
-            // getting the role name
-            var userRoleName = await _context.Roles.Where(r => r.Id == user.RoleId).Select(r => r.Name).FirstOrDefaultAsync();
+            // Get the role name from the database
+            var userRoleName = await _context.Roles
+                .Where(r => r.Id == user.RoleId)
+                .Select(r => r.Name)
+                .FirstOrDefaultAsync();
 
-            //set claim for user when loging
-             var claims = new List<Claim>
-           {
-               new Claim(ClaimTypes.Name, user.UserName),
-               new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            if (string.IsNullOrEmpty(userRoleName))
+            {
+                ErrorMessage = "User role not found.";
+                return Page();
+            }
 
-               new Claim("UserType", userRoleName)
-            };
+            // Create claims for the logged-in user
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Role, userRoleName),
+
+        new Claim("UserType", userRoleName)
+    };
 
             var identity = new ClaimsIdentity(claims, "MyCookie");
 
@@ -73,4 +84,4 @@ namespace Court.Pages.Login
             return RedirectToPage("/Dashboard");
         }
     }
-}
+    }

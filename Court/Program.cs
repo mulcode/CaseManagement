@@ -1,6 +1,7 @@
 using CourtDataAccess.DbModel;
 using CourtDataAccess.Interfaces;
 using CourtDataAccess.Managers;
+using CourtDomain.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddScoped<IDefendant, DefendantManager>();
 builder.Services.AddScoped<IUser, UserManager>();
 builder.Services.AddScoped<IComplaint, ComplaintManager>();
 builder.Services.AddScoped<IDocument, DocumentManager>();
+builder.Services.AddScoped<IPetition, PetitionManager>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();

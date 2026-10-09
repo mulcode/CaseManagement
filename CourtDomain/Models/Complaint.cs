@@ -28,6 +28,8 @@ namespace CourtDomain.Models
 
         public int? ComplainantId { get; set; }
         public virtual User Complainant { get; set; }
+
+
         public string ComplainantSignature { get; set; }
         public string ComplainantPhone { get; set; }
         public string BadgeNumber { get; set; }
@@ -35,27 +37,11 @@ namespace CourtDomain.Models
 
         public int? MagistrateId { get; set; }
         public virtual User Magistrate { get; set; }
-
         public string MagistrateSignature { get; set; }
-        public DateTime? ReceivedDateByMagistrate { get; set; }
         public Decision? MagistrateDecision { get; set; }
-
-        public DateTime PetitionDate { get; set; }
-
-        public TimeSpan PetitionTime { get; set; }
-
-        public DateTime? MagistrateDecisionDate { get; set; }
-
-        public TimeSpan? MagistrateDecisionTime { get; set; }
-
-        public bool Disobedient { get; set; }
-        public bool FoundInUnlawfulPlace { get; set; }
-        public bool RanAway { get; set; }
-        public bool AbsentFromSchool { get; set; }
-        public bool FinishAndLock { get; set; }
-        public string SupportingFacts { get; set; }
-
-        
-
+        public DateTime MagistrateDecisionDate { get; set; }
+        public TimeSpan MagistrateDecisionTime { get; set; }
+        public DateTime ReceivedDateByMagistrate { get; set; }
+     
     }
 }

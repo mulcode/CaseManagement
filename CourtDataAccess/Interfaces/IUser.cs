@@ -6,6 +6,7 @@ namespace CourtDataAccess.Interfaces
     {
         IEnumerable<User> GetAllUser();
         IEnumerable<User> GetUsersByRole(int roleId);
+        IEnumerable<User> GetUsersByRoleName(string roleName);
         User GetUser(int userId);
 
         void AddUser(User user);

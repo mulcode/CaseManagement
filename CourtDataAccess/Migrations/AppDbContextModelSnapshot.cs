@@ -30,9 +30,6 @@ namespace CourtDataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("AbsentFromSchool")
-                        .HasColumnType("bit");
-
                     b.Property<string>("BadgeNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -54,22 +51,13 @@ namespace CourtDataAccess.Migrations
                     b.Property<int>("DefendantId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Disobedient")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("FinishAndLock")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("FoundInUnlawfulPlace")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("MagistrateDecision")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("MagistrateDecisionDate")
+                    b.Property<DateTime>("MagistrateDecisionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan?>("MagistrateDecisionTime")
+                    b.Property<TimeSpan>("MagistrateDecisionTime")
                         .HasColumnType("time");
 
                     b.Property<int?>("MagistrateId")
@@ -81,25 +69,13 @@ namespace CourtDataAccess.Migrations
                     b.Property<DateTime>("OffesnseDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("PetitionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan>("PetitionTime")
-                        .HasColumnType("time");
-
-                    b.Property<bool>("RanAway")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("ReadyForApproval")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("ReceivedDateByMagistrate")
+                    b.Property<DateTime>("ReceivedDateByMagistrate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SummaryOfComplaint")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SupportingFacts")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<TimeSpan>("Time")
@@ -158,7 +134,7 @@ namespace CourtDataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Gender")
+                    b.Property<int?>("Gender")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsEnrolled")
@@ -192,13 +168,13 @@ namespace CourtDataAccess.Migrations
                     b.Property<byte[]>("Picture")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("State")
+                    b.Property<int?>("State")
                         .HasColumnType("int");
 
-                    b.Property<int>("Suffix")
+                    b.Property<int?>("Suffix")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("Time")
+                    b.Property<TimeSpan?>("Time")
                         .HasColumnType("time");
 
                     b.Property<string>("ZipCode")
@@ -233,6 +209,9 @@ namespace CourtDataAccess.Migrations
                     b.Property<int>("DocumentType")
                         .HasColumnType("int");
 
+                    b.Property<string>("FileContentType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("UploadDocument")
                         .HasColumnType("varbinary(max)");
 
@@ -241,6 +220,69 @@ namespace CourtDataAccess.Migrations
                     b.HasIndex("ComplaintId");
 
                     b.ToTable("Documents");
+                });
+
+            modelBuilder.Entity("CourtDomain.Models.Petition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AbsentFromSchool")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ComplaintId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Disobedient")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("FinishAndLock")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("FoundInUnlawfulPlace")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPetitionSaved")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MagistrateDecision")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("MagistrateDecisionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("MagistrateDecisionTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("MagistrateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MagistrateSignature")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PetitionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("PetitionTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("RanAway")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SupportingFacts")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComplaintId");
+
+                    b.HasIndex("MagistrateId");
+
+                    b.ToTable("Petitions");
                 });
 
             modelBuilder.Entity("CourtDomain.Models.Role", b =>
@@ -313,6 +355,25 @@ namespace CourtDataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Complaint");
+                });
+
+            modelBuilder.Entity("CourtDomain.Models.Petition", b =>
+                {
+                    b.HasOne("CourtDomain.Models.Complaint", "Complaint")
+                        .WithMany()
+                        .HasForeignKey("ComplaintId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CourtDomain.Models.User", "Magistrate")
+                        .WithMany()
+                        .HasForeignKey("MagistrateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Complaint");
+
+                    b.Navigation("Magistrate");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,11 +5,30 @@
 @using CourtDomain.Enums
 
 
+
+
 <div class="container mt-5" >
     <div class="card shadow">
         <div class="card-body p-4">
 
-            <h4 class="text-center text-secondary">Document Information</h4>
+            <partial name="_ComplaintTabs"
+         model="new Court.ViewModels.ComplaintTabsViewModels
+         {
+             ComplaintId = Model.DocumentInfo.ComplaintId,
+             IsDecisionSaved = Model.DocumentInfo.Complaint?.MagistrateDecision.HasValue == true
+         }" />
+
+         @if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+    </div>
+}
+ 
 
   <form method="post" enctype="multipart/form-data">
 
@@ -71,15 +90,19 @@
                 <div class="col-md-4">
 
                     <label class="form-label">
-                        Document
+                        Document<span style="color:red">*</span>
+
                     </label>
 
-                    <input type="file"
-                         asp-for ="DocFile"
-                           class="form-control"
-                           >
-                </div>
-    </div>
+                    <input asp-for="DocFile"
+                             type="file"
+                             class="form-control"
+                             accept=".jpg,.jpeg,.png,.pdf" />
+
+                             <span asp-validation-for="DocFile"
+                                  class="text-danger small"></span>
+                       </div>
+                    </div>
 
     <div class="row mb-3">
 
@@ -94,19 +117,27 @@
 
     </div>
 
-    <div class="d-flex justify-content-end gap-2 mt-4">
+   <div class="d-flex justify-content-end gap-2 mt-4">
 
-        <button type="button"
-                class="btn btn-secondary">
-            Cancel
-        </button>
-
-        <button type="submit"
-                class="btn btn-primary">
+    @if (Model.DocumentInfo.Id == 0)
+    {
+        <button type="submit" class="btn btn-primary">
             Save
         </button>
+    }
+    else
+    {
+        <button type="submit" class="btn btn-warning">
+            Update
+        </button>
+    }
 
-    </div>
+    @* <a asp-page="/Documents/DocumentList"
+       class="btn btn-secondary">
+        Cancel
+    </a> *@
+
+</div>
 
 </form>
         </div>

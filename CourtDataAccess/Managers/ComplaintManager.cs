@@ -1,69 +1,158 @@
 ﻿using CourtDataAccess.DbModel;
 using CourtDataAccess.Interfaces;
 using CourtDomain.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CourtDataAccess.Managers
 {
     public class ComplaintManager : IComplaint
     {
         private readonly AppDbContext _context;
-        public ComplaintManager(AppDbContext context)
+        private readonly ILogger<ComplaintManager> _logger;
+
+        public ComplaintManager(
+            AppDbContext context,
+            ILogger<ComplaintManager> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IEnumerable<Complaint> GetComplaintsByDefendant(int defendantId)
         {
-            return _context.Complaints
-                .Where(c => c.DefendantId == defendantId)
-                .ToList();
+            try
+            {
+                return _context.Complaints
+                    .Where(c => c.DefendantId == defendantId)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error getting complaints for DefendantId {DefendantId}",
+                    defendantId);
+
+                throw;
+            }
         }
+
         public Complaint GetComplaint(int id)
         {
-            return _context.Complaints.Find(id);
+            try
+            {
+                return _context.Complaints
+                    .FirstOrDefault(c => c.Id == id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error getting ComplaintId {ComplaintId}",
+                    id);
+
+                throw;
+            }
         }
+
         public void AddComplaint(Complaint complaint)
         {
-            _context.Complaints.Add(complaint);
-            _context.SaveChanges();
+            try
+            {
+                _context.Complaints.Add(complaint);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error adding complaint for DefendantId {DefendantId}",
+                    complaint.DefendantId);
+
+                throw;
+            }
         }
+
         public void UpdateComplaint(Complaint complaint)
         {
-            _context.Complaints.Update(complaint);
-            _context.SaveChanges();
+            try
+            {
+                // Existing tracked entity হলে SaveChanges() যথেষ্ট।
+                // Detached entity হলে Update() প্রয়োজন হতে পারে।
+                _context.Complaints.Update(complaint);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error updating ComplaintId {ComplaintId}",
+                    complaint.Id);
+
+                throw;
+            }
         }
+
         public int DeleteComplaint(int id)
         {
-            var complaint = _context.Complaints.Find(id);
-
-            if (complaint != null)
+            try
             {
+                var complaint = _context.Complaints.Find(id);
+
+                if (complaint == null)
+                {
+                    return 0;
+                }
+
                 int defendantId = complaint.DefendantId;
+
                 _context.Complaints.Remove(complaint);
                 _context.SaveChanges();
 
                 return defendantId;
             }
-            return 0;
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error deleting ComplaintId {ComplaintId}",
+                    id);
+
+                throw;
+            }
         }
 
-        public IEnumerable<DefendantComplaintViewModel> GetAwatingComplaintSubmision()
+        public IEnumerable<DefendantComplaintViewModel>
+  GetAwatingComplaintSubmision()
         {
-            var awatingForSubmission = _context.Complaints
-                .Where(c => c != null)
-                .Select(c => new DefendantComplaintViewModel
-                {
-                    ComplaintId = c.Id,
-                    Date = c.Date,
-                    DefendantName = c.Defendant.FirstName + "" + c.Defendant.LastName,
-                    ComplaintType = c.ComplaintType.ToString(),
-                    ComplainantName = c.Complainant != null ? c.Complainant.UserName : ""
-                }).ToList();
+            try
+            {
+                return _context.Complaints
+                    .Where(c => !c.ReadyForApproval)
+                    .Select(c => new DefendantComplaintViewModel
+                    {
+                        ComplaintId = c.Id,
+                        Date = c.Date,
+                        DefendantName =
+                            c.Defendant.FirstName + " " +
+                            c.Defendant.LastName,
+                        ComplaintType = c.ComplaintType.ToString(),
+                        ComplainantName = c.Complainant != null
+                            ? c.Complainant.UserName
+                            : ""
+                    })
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error getting complaints awaiting submission.");
 
-            return awatingForSubmission;
+                throw;
+            }
         }
     }
 }
+

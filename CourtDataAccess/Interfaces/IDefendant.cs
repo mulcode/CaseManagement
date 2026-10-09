@@ -17,5 +17,7 @@ namespace CourtDataAccess.Interfaces
         void AddDefendant(Defendant defendant);
         void UpdateDefendant(Defendant defendant);
         void DeleteDefendant(int id);
+
+        bool HasComplaints(int defendantId);
     }
 }

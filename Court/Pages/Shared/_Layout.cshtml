@@ -11,38 +11,91 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Court</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Dashboard">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Defendants/DefendantList">Filing</a>
-                        </li>
-                        <li>
-                            <form method="post" class="position-fixed top-0 end-0 mt-3 me-3">
-                              <button asp-page-handler="Logout" class="btn btn-danger" type="submit">Logout</button>
+    <nav class="navbar navbar-expand-sm shadow-sm mb-3"
+         style="background-color: #1f4e78;">
+
+        <div class="container">
+
+            <!-- Court -->
+            <a class="navbar-brand text-white pe-4 me-3"
+               style="border-right: 1px solid rgba(255,255,255,0.18);"
+               asp-area=""
+               asp-page="/Index">
+                Court
+            </a>
+
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="navbar-collapse collapse">
+
+                <!-- Left menu -->
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                <ul class="navbar-nav">
+
+                    <li class="nav-item">
+                        <a class="navbar-brand text-white pe-4 me-3"
+                           style="border-right: 2px solid rgba(255,255,255,0.18);"
+                           asp-area=""
+                           asp-page="/Dashboard">
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="navbar-brand text-white pe-4 me-3"
+                           style="border-right: 1px solid rgba(255,255,255,0.18);"
+                           asp-area=""
+                           asp-page="/Defendants/DefendantList">
+                            Filing
+                        </a>
+                    </li>
+
+                </ul>
+
+                <!-- Right side -->
+                
+                    <ul class="navbar-nav ms-auto me-0">
+                        <li class="nav-item d-flex align-items-center">
+
+                            <span class="me-3 text-white">
+                                <strong>@User.Identity.Name</strong>
+                            </span>
+
+                            <form method="post" asp-page="/Logout">
+                                <button class="btn btn-danger btn-sm"
+                                        type="submit">
+                                    Logout
+                                </button>
                             </form>
+
                         </li>
                     </ul>
-                </div>
+                }
+
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
+
+    
+
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted" asp-page="/Login">
+    <footer class="border-top footer text-muted" asp-page="/Login" asp-page-handler="Logout">
         <div class="container">
             &copy; 2026 - Court - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
