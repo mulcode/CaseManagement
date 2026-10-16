@@ -1,7 +1,11 @@
 ﻿@page
 @model Court.Pages.DashboardModel
 @{
+    ViewData["Title"] = "Dashboard";
 }
+@using CourtDomain.Enums
+@using CourtDomain.DTOs;
+
 
 @if (TempData["LoginSuccess"] != null)
 {
@@ -13,17 +17,11 @@
              aria-live="assertive"
              aria-atomic="true">
 
-            <div class="toast-header">
-                <strong class="me-auto">Login</strong>
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="toast">
-                </button>
-            </div>
-
-            <div class="toast-body">
-                Login successful!
-            </div>
+             <div class="toast-body d-flex align-items-center gap-2 py-3 px-4"
+                   style="background-color: #e8f5e9; color: #2e7d32; border-radius: 8px;">
+    
+                 <span class="fw-semibold">Login successful!</span>
+             </div>
 
         </div>
 
@@ -36,7 +34,7 @@
             var toastElement = document.getElementById("loginToast");
 
             var toast = new bootstrap.Toast(toastElement, {
-                delay: 2000
+                delay: 1000
             });
 
             toast.show();
@@ -72,8 +70,8 @@
             <div class="d-flex justify-content-end mb-2">
 
                 <input type="text"
-                       id="searchInput"
-                       class="form-control"
+                       class="form-control table-search"
+                       data-table="defendantTable"
                        placeholder="Search..."
                        style="width: 145px;" />
 
@@ -91,7 +89,6 @@
                             <th>Date</th>
                             <th>Defendant Name</th>
                             <th>Complaint Type</th>
-                            <th>Complainant Name</th>
                         </tr>
 
                     </thead>
@@ -103,7 +100,7 @@
                             <tr>
 
                                 <td>
-                                    @item.Date.ToString("MMM-dd-yyyy")
+                                   @(item.Date?.ToString("MMM-dd-yyyy") ?? "")
                                 </td>
 
                                 <td>
@@ -111,11 +108,7 @@
                                 </td>
 
                                 <td>
-                                    @item.ComplaintType
-                                </td>
-
-                                <td>
-                                    @item.ComplainantName
+                                @item.ComplaintType
                                 </td>
 
                                 <td>
@@ -142,26 +135,390 @@
 </div>
 
 
+<!---Decision--->
+
+<div class="container-fluid mt-3">
+
+    <div class="card shadow-sm">
+
+        <!-- Header -->
+        <div class="card-header p-0 border-0">
+
+            <div class="d-flex align-items-center">
+
+                 <div class="text-white fw-bold px-3 py-2"
+             style="background-color: #f39c12;">
+            Complaints Awaiting Decision
+        </div>
+
+                <div class="bg-danger text-white fw-bold px-3 py-2">
+                    @Model.Decisions.Count()
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Search -->
+        <div class="card-body p-2">
+
+            <div class="d-flex justify-content-end mb-2">
+
+                <input type="text"
+                       class="form-control table-search"
+                       data-table="decisionTable"
+                       placeholder="Search..."
+                       style="width: 145px;" />
+
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+
+                <table class="table table-striped table-bordered mb-0"
+                       id="decisionTable">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>Date</th>
+                            <th>Defendant Name</th>
+                            <th>Complaint Type</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                          @foreach (var item in Model.Decisions)
+                        {
+                            <tr>
+
+                                <td>
+                                   @(item.Date?.ToString("MMM-dd-yyyy") ?? "")
+                                </td>
+
+                                <td>
+                                    @item.DefendantName
+                                </td>
+
+                                <td>
+                                @item.ComplaintType
+                                </td>
+
+                                <td>
+                                    <a asp-page="/Complaints/ComplaintDecision"
+                                       asp-route-complaintId="@item.ComplaintId"
+                                       class="btn btn-primary btn-sm">
+                                        Decision
+                                    </a>
+                                </td>
+
+                            </tr>
+                        } 
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+ <!-- Awatining Petition-->
+
+    <div class="container-fluid mt-3">
+
+    <div class="card shadow-sm">
+
+       
+        <div class="card-header p-0 border-0">
+            <div class="d-flex align-items-center">
+
+                <div class="text-white fw-bold px-3 py-2"
+                     style="background-color: #f39c12;">
+                   Complaints Awating Petitions
+                </div>
+
+                <div class="bg-danger text-white fw-bold px-3 py-2">
+                    @Model.ComplaintsWithoutPetition.Count
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="card-body p-2">
+
+            <div class="d-flex justify-content-end mb-2">
+                <input type="text"
+                       class="form-control table-search"
+                       data-table="complaintsWithoutPetitionTable"
+                       placeholder="Search..."
+                       style="width: 145px;" />
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+
+                <table class="table table-striped table-bordered mb-0"
+                       id="complaintsWithoutPetitionTable">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Defendant Name</th>
+                            <th>Complaint Type</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.ComplaintsWithoutPetition)
+                        {
+                            <tr>
+                                <td>
+                                    @item.DefendantName
+                                </td>
+                                <td>
+                                   @((CourtDomain.Enums.ComplaintType)item.ComplaintType)
+                                </td>
+
+                                <td>
+                                    <a asp-page="/Petitions/Petition"
+                                       asp-route-complaintId="@item.ComplaintId"
+                                       class="btn btn-primary btn-sm">
+                                        Petition
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Petitions -->
+<div class="container-fluid mt-3">
+
+    <div class="card shadow-sm">
+
+        <!-- Header -->
+        <div class="card-header p-0 border-0">
+            <div class="d-flex align-items-center">
+
+                <div class="text-white fw-bold px-3 py-2"
+                     style="background-color: #f39c12;">
+                    Petitions
+                </div>
+
+                <div class="bg-danger text-white fw-bold px-3 py-2">
+                    @Model.Petitions.Count
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="card-body p-2">
+
+            <div class="d-flex justify-content-end mb-2">
+                <input type="text"
+                       class="form-control table-search"
+                       data-table="petitionTable"
+                       placeholder="Search..."
+                       style="width: 145px;" />
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+
+                <table class="table table-striped table-bordered mb-0"
+                       id="petitionTable">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Petition Date</th>
+                            <th>Defendant Name</th>
+                            <th>Complaint Type</th>
+                            <th>Approve By</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.Petitions)
+                        {
+                            <tr>
+                                <td>
+                                    @item.PetitionDate.ToString("MMM-dd-yyyy")
+                                </td>
+
+                                <td>
+                                    @item.DefendantName
+                                </td>
+                                <td>
+                                   @((CourtDomain.Enums.ComplaintType)item.ComplaintType)
+                                </td>
+
+                                <td>
+                                    @item.ApproveBy
+                                </td>
+
+                                <td>
+                                    @if (item.FinishAndLock)
+                                    {
+                                        <a asp-page="/Petitions/Petition"
+                                           asp-route-complaintId="@item.ComplaintId"
+                                           asp-route-mode="view"
+                                           class="btn btn-info btn-sm">
+                                            View
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/Petitions/Petition"
+                                           asp-route-complaintId="@item.ComplaintId"
+                                           class="btn btn-primary btn-sm">
+                                            Update
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ <!-- Upcoming court Case -->
+<div class="container-fluid mt-3">
+
+    <div class="card shadow-sm">
+        <div class="card-header p-0 border-0">
+            <div class="d-flex align-items-center">
+
+                <div class="text-white fw-bold px-3 py-2"
+                     style="background-color: #f39c12;">
+                    Upcoming Court Case
+                </div>
+
+                <div class="bg-danger text-white fw-bold px-3 py-2">
+                    @Model.Arraignments.Count
+                </div>
+
+            </div>
+        </div>
+
+           <div class="card-body p-2">
+
+            <div class="d-flex justify-content-end mb-2">
+                <input type="text"
+                       class="form-control table-search"
+                       data-table="petitionTable"
+                       placeholder="Search..."
+                       style="width: 145px;" />
+            </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Petition Date</th>
+                        <th>Defendant Name</th>
+                        <th>Complaint Type</th>
+                        <th>Approve By</th>
+                        <th>Court Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Arraignments.Any())
+                    {
+                        @foreach (var item in Model.Arraignments)
+                        {
+                            <tr>
+                                <td>@item.PetitionDate.ToString("dd-MMM-yyyy")</td>
+                                <td>@item.DefendantName</td>
+                                <td>@((CourtDomain.Enums.ComplaintType)item.ComplaintType)</td>
+                                <td>@item.ApproveBy</td>
+                                <td>
+                                    @(item.CourtDate?.ToString("dd-MMM-yyyy") ?? "")
+                                    @if (item.CourtTime.HasValue)
+                                    {
+                                        <span>@DateTime.Today.Add(item.CourtTime.Value).ToString("hh:mm tt")</span>
+                                    }
+                                </td>
+                                 <td>
+                                      @if (item.FinishAndLock)
+                                    {
+                                        <a asp-page="/Petitions/Petition"
+                                           asp-route-complaintId="@item.ComplaintId"
+                                           asp-route-mode="view"
+                                           class="btn btn-info btn-sm">
+                                            View
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/Petitions/Petition"
+                                           asp-route-complaintId="@item.ComplaintId"
+                                           class="btn btn-primary btn-sm">
+                                            Update
+                                        </a>
+                                    }
+                                 </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">
+                                No arraignments found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+   
+
+<!--Search -->
 <script>
+    document.querySelectorAll(".table-search").forEach(function (input) {
 
-document.getElementById("searchInput").addEventListener("keyup", function() {
+        input.addEventListener("keyup", function () {
 
-var searchValue = this.value.toLowerCase();
+            var searchValue = this.value.toLowerCase();
+            var tableId = this.dataset.table;
 
-var rows = document.querySelectorAll("#defendantTable tbody tr");
+            var rows = document.querySelectorAll(
+                "#" + tableId + " tbody tr"
+            );
 
-rows.forEach(function(row) {
-
-var rowText = row.innerText.toLowerCase();
-
-if (rowText.includes(searchValue)) {
-row.style.display = "";
-}
-else {
-row.style.display = "none";
-}
-
-});
-
-});
+            rows.forEach(function (row) {
+                row.style.display =
+                    row.innerText.toLowerCase().includes(searchValue)
+                        ? ""
+                        : "none";
+            });
+        });
+    });
 </script>

@@ -1,6 +1,7 @@
 ﻿@page
 @model Court.Pages.Complaints.ComplaintSubmitModel
 @{
+    ViewData["Title"] = "Submit";
 }
 
 
@@ -58,9 +59,10 @@
          <partial name="_ComplaintTabs"
          model="new Court.ViewModels.ComplaintTabsViewModels
          {
-             ComplaintId = Model.ComplaintInfo.Id,
-             IsSubmitted = Model.ComplaintInfo.ReadyForApproval,
-             IsDecisionSaved = Model.ComplaintInfo.MagistrateDecision.HasValue
+                         ComplaintId = Model.ComplaintId,
+                         IsDecisionSaved = Model.IsDecisionSaved,
+                         PetitionId = Model.PetitionId,
+                         IsPetitionFinished = Model.IsPetitionFinished
          }" />
 
              <form method="post" enctype="multipart/form-data">
@@ -68,6 +70,7 @@
                 <input type="hidden" asp-for="ComplaintInfo.Id" />
                  <input type="hidden" asp-for="ComplaintInfo.DefendantId" />
                  <input type="hidden" asp-for="ComplaintInfo.Date" />
+                 <input type="hidden" asp-for="ComplaintInfo.Time" />
  
                   <div class="row mb-3">
 
@@ -77,22 +80,22 @@
                             Complainant Name<span style="color:red">*</span>
                         </label>
                             <select asp-for="ComplaintInfo.ComplainantId"
-                                    class="form-select"
-                                    id="complainantName">
+        class="form-select"
+        id="complainantName">
+    <option value="0">-- Select CIPD User --</option>
 
-                                <option value="">-- Select CIPD User --</option>
+    @foreach (var user in Model.ComplainantUsers)
+    {
+        <option value="@user.Id"
+                data-signature="@user.UserName">
+            @user.UserName
+        </option>
+    }
+</select>
 
-                                @foreach (var user in Model.ComplainantUsers)
-                                {
-                                    <option value="@user.Id"
-                                            data-signature="@user.UserName">
-                                        @user.UserName
-                                    </option>
-                                }
-
-                            </select>
-                        
-                    </div>
+<span asp-validation-for="ComplaintInfo.ComplainantId"
+      class="text-danger"></span>
+                          </div>
 
     <!-- Complainant Signature -->
     <div class="col-md-4">
@@ -104,7 +107,8 @@
         <input asp-for="ComplaintInfo.ComplainantSignature"
                class="form-control signature-input"
                id="complainantSignature" />
-    
+    <span asp-validation-for="ComplaintInfo.ComplainantSignature"
+      class="text-danger"></span>
 </div>
 
 
@@ -150,7 +154,8 @@
   
 
                     <!-- Buttons - Bottom Right -->
-@if (!Model.ComplaintInfo.ReadyForApproval)
+@if (!Model.ComplaintInfo.ReadyForApproval &&
+     User.HasClaim("UserType", "CIPD") )
 {
     <div class="d-flex justify-content-end gap-2 mt-4">
         <button type="submit"

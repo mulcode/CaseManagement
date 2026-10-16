@@ -17,10 +17,14 @@ namespace CourtDomain.Models
 
         [Required(ErrorMessage = "Time is Required")]
         public TimeSpan? Time { get; set; }
+
+
         [Required(ErrorMessage = "First name is Required")]
         public string FirstName { get; set; }
+
         public string MiddleName { get; set; }
         [Required(ErrorMessage = "Last name is Required")]
+
         public string LastName { get; set; }
         public Suffix? Suffix { get; set; }
         public string NickName { get; set; }

@@ -1,5 +1,9 @@
 ﻿@page "/Login"
+@{
+    ViewData["Title"] = "Login";
+}
 @model Court.Pages.Login.LoginModel
+
 @{
 }
 
@@ -9,18 +13,18 @@
 
             <div class="card shadow mt-5">
                 <div class="card-body p-6">
-
-                    <h2 class="text-center mb-4">Login</h2>
+  
 
                     <form method="post">
                         <div class="mb-3">
                             <label for="UserName" class="form-label">User Name</label>
-                            <input asp-for="UserName"  class="form-control" id="UserName" required>
+                            <input asp-for="UserName"  class="form-control" id="UserName" placeholder="Enter User Name" required>
                             <span asp-validation-for="UserName" class ="text-danger small"></span>
                         </div>
                         <div class="mb-3">
                             <label for="Password" class="form-label">Password</label>
-                            <input asp-for="Password" class="form-control" id="Password" required>
+                            <input asp-for="Password" class="form-control" id="Password" placeholder="Enter Password" 
+                            type="password" required>
                             <span asp-validation-for="Password" class ="text-danger small"></span>
                         </div>
 

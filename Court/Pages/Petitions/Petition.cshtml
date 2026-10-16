@@ -3,6 +3,7 @@
 @page 
 @model Court.Pages.Petitions.PetitionModel
 @{
+    ViewData["Title"] = "Petition";
 }
 
 @using CourtDomain.Enums
@@ -25,16 +26,18 @@
             <partial name="_ComplaintTabs"
                      model="new Court.ViewModels.ComplaintTabsViewModels
                      {
-                       ComplaintId = Model.PetitionInfo.ComplaintId,
-                       IsDecisionSaved = Model.PetitionInfo.MagistrateDecision > 0
+                        ComplaintId = Model.PetitionInfo.ComplaintId,
+                        IsDecisionSaved = Model.IsDecisionSaved,
+                        PetitionId = Model.PetitionInfo.Id,
+                        IsPetitionFinished = Model.PetitionInfo.FinishAndLock
                          
                      }" />
 
 
              <form method="post">
 
-    <input type="hidden" asp-for="PetitionInfo.Id" />
-    <input type="hidden" asp-for="PetitionInfo.ComplaintId" />
+                 <input type="hidden" asp-for="PetitionInfo.Id" />
+                  <input type="hidden" asp-for="PetitionInfo.ComplaintId" />
 
                     <div class="row mb-3">
                         <div class="col-md-4">

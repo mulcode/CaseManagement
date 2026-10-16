@@ -8,7 +8,8 @@ namespace CourtDataAccess.Interfaces
     public interface IComplaint
     {
         IEnumerable<Complaint> GetComplaintsByDefendant(int defendantId);
-        IEnumerable<DefendantComplaintViewModel> GetAwatingComplaintSubmision();
+        IEnumerable<DefendantComplaintDto> GetAwatingComplaintSubmision();
+        IEnumerable<DefendantComplaintDto> GetAwatingDecision();
         Complaint GetComplaint(int id);
         void AddComplaint(Complaint complaint);
         void UpdateComplaint(Complaint complaint);

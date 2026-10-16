@@ -1,6 +1,7 @@
 ﻿@page
 @model Court.Pages.Complaints.ComplaintDecisionModel
 @{
+    ViewData["Title"] = "Decision";
 }
 @using CourtDomain.Enums
 
@@ -14,12 +15,7 @@
         </button>
     </div>
 }
-@if (!Model.ComplaintInfo.ReadyForApproval)
-{
-    <div class="alert alert-danger decision-warning">
-        Please submit the complaint first.
-    </div>
-}
+
 
 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {
@@ -35,9 +31,10 @@
             <partial name="_ComplaintTabs"
                      model="new Court.ViewModels.ComplaintTabsViewModels
                      {
-                         ComplaintId = Model.ComplaintInfo.Id,
-                         IsSubmitted = Model.ComplaintInfo.ReadyForApproval,
-                         IsDecisionSaved = Model.ComplaintInfo.MagistrateDecision.HasValue
+                         ComplaintId = Model.ComplaintId,
+                         IsDecisionSaved = Model.IsDecisionSaved,
+                         PetitionId = Model.PetitionId,
+                         IsPetitionFinished = Model.IsPetitionFinished
                      }" />
 
            
@@ -53,21 +50,24 @@
                         <label class="form-label">
                             Magistrate Name<span style="color:red">*</span>
                         </label>
-                        <select asp-for="ComplaintInfo.MagistrateId"
-                                class="form-select"
-                                id="magistrateName">
+                       <select asp-for="ComplaintInfo.MagistrateId"
+        class="form-select"
+        id="magistrateName">
 
-                            <option value="">-- Select User --</option>
+    <option value="0">-- Select User --</option>
 
-                            @foreach (var user in Model.Users)
-                            {
-                                <option value="@user.Id"
-                                        data-signature="@user.UserName">
-                                    @user.UserName
-                                </option>
-                            }
+    @foreach (var user in Model.Users)
+    {
+        <option value="@user.Id"
+                data-signature="@user.UserName">
+            @user.UserName
+        </option>
+    }
 
-                        </select>
+</select>
+
+<span asp-validation-for="ComplaintInfo.MagistrateId"
+      class="text-danger"></span>
                     </div>
 
                     <!-- Complainant Signature -->
@@ -78,19 +78,26 @@
                         <input asp-for="ComplaintInfo.MagistrateSignature"
                                class="form-control signature-input"
                                id="magistrateSignature" />
+                               <span asp-validation-for="ComplaintInfo.MagistrateSignature"
+                                     class="text-danger"></span>
                     </div>
 
 
                     <!-- Complainant Phone -->
-                    <div class="col-md-4">
-                        <label class="form-label">
-                            Date Received By Magistrate
-                        </label>
+                   
 
-                        <input asp-for="ComplaintInfo.ReceivedDateByMagistrate"
-                               class="form-control" />
+                      <div class="col-md-4">
+                       <label class="form-label">
+                        Date Received By Magistrate
+                       </label>
+
+                        <input type="date"
+                           asp-for ="ComplaintInfo.ReceivedDateByMagistrate"
+                              class="form-control"/>
+
+                              <span asp-validation-for="ComplaintInfo.ReceivedDateByMagistrate"
+                               class="text-danger small"></span>
                     </div>
-
                 </div>
 
 
@@ -104,12 +111,15 @@
                                 class="form-select">
                             <option value="">-- Select Decision --</option>
                         </select>
+                        <span asp-validation-for="ComplaintInfo.MagistrateDecision"
+                               class="text-danger small"></span>
                     </div>
 
                 </div>
 
   
-                @if (Model.ComplaintInfo.ReadyForApproval && !Model.ComplaintInfo.MagistrateDecision.HasValue)
+                @if (Model.ComplaintInfo.ReadyForApproval && !Model.ComplaintInfo.MagistrateDecision.HasValue
+                && User.HasClaim("UserType", "Magistrate"))
                 {
                     <div class="d-flex justify-content-end gap-2 mt-2">
                         <button type="submit" class="btn btn-primary">

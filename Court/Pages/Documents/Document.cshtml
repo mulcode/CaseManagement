@@ -1,6 +1,7 @@
 ﻿@page
 @model Court.Pages.Documents.DocumentModel
 @{
+    ViewData["Title"] = "Document";
 }
 @using CourtDomain.Enums
 
@@ -12,11 +13,12 @@
         <div class="card-body p-4">
 
             <partial name="_ComplaintTabs"
-         model="new Court.ViewModels.ComplaintTabsViewModels
-         {
-             ComplaintId = Model.DocumentInfo.ComplaintId,
-             IsDecisionSaved = Model.DocumentInfo.Complaint?.MagistrateDecision.HasValue == true
-         }" />
+               model="new Court.ViewModels.ComplaintTabsViewModels
+               { ComplaintId = Model.DocumentInfo.ComplaintId,
+             IsDecisionSaved = Model.IsDecisionSaved,
+             PetitionId = Model.PetitionId,
+             IsPetitionFinished = Model.IsPetitionFinished
+              }" />
 
          @if (TempData["SuccessMessage"] != null)
 {

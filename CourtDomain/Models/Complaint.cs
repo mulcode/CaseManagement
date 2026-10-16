@@ -14,10 +14,14 @@ namespace CourtDomain.Models
 
         public virtual Defendant Defendant { get; set; }
 
-        [Required(ErrorMessage = "Date is Required")]
-        public DateTime Date { get; set; }
 
-        public TimeSpan Time { get; set; }
+        [Required(ErrorMessage = "Date is Required")]
+        public DateTime? Date { get; set; }
+
+
+        [Required(ErrorMessage = "Time is Required")]
+        public TimeSpan? Time { get; set; }
+
 
         [Required(ErrorMessage = "Complaint Type is Required")]
         public ComplaintType ComplaintType { get; set; }
@@ -42,6 +46,6 @@ namespace CourtDomain.Models
         public DateTime MagistrateDecisionDate { get; set; }
         public TimeSpan MagistrateDecisionTime { get; set; }
         public DateTime ReceivedDateByMagistrate { get; set; }
-     
+
     }
 }

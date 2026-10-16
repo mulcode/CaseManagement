@@ -1,7 +1,12 @@
-﻿using CourtDataAccess.Interfaces;
-using CourtDataAccess.DbModel;
+﻿using CourtDataAccess.DbModel;
+using CourtDataAccess.Interfaces;
+using CourtDomain.DTOs;
 using CourtDomain.Models;
+using CourtDomain.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Data;
+
 
 namespace CourtDataAccess.Managers
 {
@@ -89,6 +94,50 @@ namespace CourtDataAccess.Managers
                 throw;
             }
         }
+
+
+        public List<PetitionDto> GetPetitions()
+        {
+            try
+            {
+                var result = _context.Database
+                    .SqlQuery<PetitionDto>($"EXEC GetPetitionList")
+                    .ToList();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting petitions");
+                throw;
+            }
+        }
+
+
+        public List<ComplaintWithoutPetitionDto> GetComplaintsWithoutPetition()
+        {
+            return _context.Database
+                .SqlQuery<ComplaintWithoutPetitionDto>(
+                    $"EXEC GetComplaintsWithoutPetition")
+                .ToList();
+        }
+
+        public IEnumerable<ArraignemntDto> GetCourteCases()
+        {
+            try
+            {
+                return _context.Database
+                    .SqlQuery<ArraignemntDto>($"EXEC GetUpcomingCourtCases")
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting arraignment list");
+                throw;
+            }
+        }
+
     }
 }
 

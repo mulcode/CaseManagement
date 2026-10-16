@@ -54,6 +54,9 @@ namespace Court.Pages.Complaints
         {
             try
             {
+                _logger.LogInformation(
+                    "Deleting complaint with ID: {ComplaintId}", id);
+
                 var defendantId = c_complaint.DeleteComplaint(id);
 
                 if (defendantId != 0)
@@ -61,26 +64,23 @@ namespace Court.Pages.Complaints
                     TempData["SuccessMessage"] =
                         "Complaint deleted successfully.";
 
-                    return RedirectToPage(
-                        "/Complaints/ComplaintList",
-                        new { id = defendantId }
-                    );
+                    return RedirectToPage("/Complaints/ComplaintList");
                 }
 
                 TempData["ErrorMessage"] =
-                    "Complaint could not be deleted.";
+                    $"Complaint with ID {id} was not found.";
 
                 return RedirectToPage("/Complaints/ComplaintList");
             }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    ex,
-                    "Error deleting complaint {ComplaintId}",
-                    id);
+                // Actual error console-e dekhabe
+                Console.WriteLine($"DELETE ERROR: {ex}");
+                _logger.LogError(ex,
+                    "Error deleting complaint {ComplaintId}", id);
 
-                TempData["ErrorMessage"] =
-                    "An error occurred while deleting the complaint.";
+                TempData["ErrorMessage"] = ex.InnerException?.Message
+                    ?? ex.Message;
 
                 return RedirectToPage("/Complaints/ComplaintList");
             }

@@ -1,6 +1,7 @@
 ﻿@page 
 @model Court.Pages.Complaints.ComplaintModel
 @{
+    ViewData["Title"] = "Complaint";
 }
 @using CourtDomain.Enums
 
@@ -15,8 +16,10 @@
 
          model="new Court.ViewModels.ComplaintTabsViewModels
          {
-             ComplaintId = Model.ComplaintInfo.Id,
-             IsDecisionSaved = Model.ComplaintInfo.MagistrateDecision.HasValue
+              ComplaintId = Model.ComplaintId,
+             IsDecisionSaved = Model.IsDecisionSaved,
+             PetitionId = Model.PetitionId,
+             IsPetitionFinished = Model.IsPetitionFinished
            
          }" />
 
@@ -60,8 +63,9 @@
 
             <input type="time"
                    asp-for="ComplaintInfo.Time"
-                   class="form-control"
-                   required />
+                   class="form-control" />
+                   <span asp-validation-for="ComplaintInfo.Time"
+                  class="text-danger small"></span>
         </div>
 
     </div>

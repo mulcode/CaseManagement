@@ -9,15 +9,18 @@ namespace Court.Pages.Petitions
     {
         private readonly IPetition c_petiton;
         private readonly IUser _user;
+        private readonly IComplaint c_complaint;
         private readonly ILogger<PetitionModel> _logger;
 
         public PetitionModel(
             IPetition petition,
             IUser user,
+            IComplaint complaint,
             ILogger<PetitionModel> logger)
         {
             c_petiton = petition;
             _user = user;
+            c_complaint = complaint;
             _logger = logger;
         }
 
@@ -26,6 +29,7 @@ namespace Court.Pages.Petitions
 
         public IEnumerable<User> Users { get; set; } = new List<User>();
 
+        public bool IsDecisionSaved { get; set; }
         public IActionResult OnGet(int complaintId)
         {
             try
@@ -45,6 +49,11 @@ namespace Court.Pages.Petitions
                     PetitionInfo.MagistrateDecisionDate = DateTime.Today;
                     PetitionInfo.ComplaintId = complaintId;
                 }
+
+                var complaint = c_complaint.GetComplaint(complaintId);
+
+                IsDecisionSaved = complaint != null
+                   && complaint.MagistrateDecision.HasValue;
 
                 return Page();
             }
@@ -86,10 +95,6 @@ namespace Court.Pages.Petitions
                     var petition =
                         c_petiton.GetPetition(PetitionInfo.Id);
 
-                    if (petition == null)
-                    {
-                        return NotFound();
-                    }
 
                     petition.PetitionDate = PetitionInfo.PetitionDate;
                     petition.PetitionTime = PetitionInfo.PetitionTime;

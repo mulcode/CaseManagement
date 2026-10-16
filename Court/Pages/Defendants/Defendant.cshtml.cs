@@ -86,7 +86,7 @@ namespace Court.Pages.Defendants
                     m_defendant.AddDefendant(DefendantInfo);
 
                     TempData["SuccessMessage"] =
-                        "Defendant Saved Successfully";
+                        "Defendant Created Successfully";
                 }
                 else
                 {

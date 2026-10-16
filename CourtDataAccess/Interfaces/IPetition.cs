@@ -1,7 +1,10 @@
-﻿using CourtDomain.Models;
+﻿using CourtDomain.DTOs;
+using CourtDomain.Models;
+using CourtDomain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 
 namespace CourtDataAccess.Interfaces
 {
@@ -11,5 +14,12 @@ namespace CourtDataAccess.Interfaces
         Petition GetPetition(int id);
         void UpdatePetition(Petition petition);
         Petition GetPetitionByComplaintId(int complaintId);
+
+        List<PetitionDto> GetPetitions();
+
+        List<ComplaintWithoutPetitionDto> GetComplaintsWithoutPetition();
+
+        IEnumerable<ArraignemntDto> GetCourteCases();
+
     }
 }

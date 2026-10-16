@@ -11,9 +11,13 @@ namespace Court.Pages.Documents
     public class DocumentModel : PageModel
     {
         private readonly IDocument d_document;
-        public DocumentModel(IDocument document)
+        private readonly IComplaint c_complaint;
+        private readonly IPetition p_petition;
+        public DocumentModel(IDocument document,IComplaint complaint,IPetition petition)
         {
             d_document = document;
+            c_complaint = complaint;
+            p_petition = petition;
         }
 
         [BindProperty]
@@ -21,9 +25,18 @@ namespace Court.Pages.Documents
 
         [BindProperty]
         public IFormFile? DocFile { get; set; }
+        public bool IsDecisionSaved { get; set; }
+
+        public int PetitionId { get; set; }
+
+        public bool IsPetitionFinished { get; set; }
+
+        public int ComplaintId { get; set; }
 
         public void OnGet(int? id, int complaintId)
         {
+            ComplaintId = complaintId;
+
             if (id.HasValue)
             {
                 DocumentInfo = d_document.GetDocument(id.Value);
@@ -33,7 +46,20 @@ namespace Court.Pages.Documents
                 DocumentInfo.DocumentDate = DateTime.Now;
                 DocumentInfo.ComplaintId = complaintId;
             }
+
+            var complaint = c_complaint.GetComplaint(complaintId);
+
+            IsDecisionSaved = complaint?.MagistrateDecision.HasValue == true;
+
+            var petition = p_petition.GetPetitionByComplaintId(DocumentInfo.ComplaintId);
+
+            if (petition != null)
+            {
+                PetitionId = petition.Id;
+                IsPetitionFinished = petition.FinishAndLock;
+            }
         }
+
 
         public IActionResult OnPost()
         {

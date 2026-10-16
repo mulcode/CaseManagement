@@ -9,14 +9,22 @@ namespace Court.Pages.Complaints
     public class ComplaintModel : PageModel
     {
         private readonly IComplaint c_complaint;
+        private readonly IPetition c_petition;
 
-        public ComplaintModel(IComplaint complaint)
+        public ComplaintModel(IComplaint complaint, IPetition petition)
         {
             c_complaint = complaint;
+            c_petition = petition;
         }
 
         [BindProperty]
         public Complaint ComplaintInfo { get; set; } = new Complaint();
+
+        public int ComplaintId { get; set; }
+        public int PetitionId { get; set; }
+        public bool IsDecisionSaved { get; set; }
+        public bool IsPetitionFinished { get; set; }
+
 
         public IActionResult OnGet(int? id, int? defendantId)
         {
@@ -41,6 +49,22 @@ namespace Court.Pages.Complaints
                     ComplaintInfo.DefendantId = defendantId.Value;
                     ComplaintInfo.OffesnseDate = DateTime.Now;
                     ComplaintInfo.Date = DateTime.Today;
+                }
+
+                ComplaintId = ComplaintInfo.Id;
+
+                if (ComplaintId > 0)
+                {
+                    IsDecisionSaved =
+                        ComplaintInfo.MagistrateDecision.HasValue;
+
+                    var petition = c_petition.GetPetitionByComplaintId(ComplaintId);
+
+                    if (petition != null)
+                    {
+                        PetitionId = petition.Id;
+                        IsPetitionFinished = petition.FinishAndLock;
+                    }
                 }
 
                 return Page();
@@ -94,7 +118,7 @@ namespace Court.Pages.Complaints
                     complaint.OffesnseDate = ComplaintInfo.OffesnseDate;
                     complaint.ComplaintType = ComplaintInfo.ComplaintType;
                     complaint.SummaryOfComplaint =
-                        ComplaintInfo.SummaryOfComplaint;
+                    ComplaintInfo.SummaryOfComplaint;
 
                     c_complaint.UpdateComplaint(complaint);
 

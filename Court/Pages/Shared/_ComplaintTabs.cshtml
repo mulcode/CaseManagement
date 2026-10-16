@@ -56,7 +56,8 @@
     
 
     <!-- Petition -->
-    @if (Model.ComplaintId > 0)
+    @if (Model.ComplaintId > 0 &&
+         Model.IsDecisionSaved)
     {
         <li class="nav-item">
                @* <a class="nav-link @(currentPage?.Equals("/Complaints/ComplaintDecision", StringComparison.OrdinalIgnoreCase) == true ? "active" : "")" *@
@@ -68,5 +69,29 @@
             </a>
         </li>
     }
+
+@if (Model.IsPetitionFinished)
+{
+    <li class="nav-item">
+        <a class="nav-link @( 
+            currentPage?.Equals(
+                "/Arraignments/ArraignmentHearing",
+                StringComparison.OrdinalIgnoreCase) == true
+            ||
+            currentPage?.Equals(
+                "/Arraignments/ArraignmentHearings",
+                StringComparison.OrdinalIgnoreCase) == true
+            ||
+            currentPage?.Equals(
+                "/Arraignments",
+                StringComparison.OrdinalIgnoreCase) == true
+                ? "active" : "")"
+           asp-page="/Arraignments/ArraignmentHearings"
+           asp-route-complaintId="@Model.ComplaintId">
+            Arraignment
+        </a>
+    </li>
+}
+  
 
 </ul>

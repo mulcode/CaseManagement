@@ -20,23 +20,7 @@ namespace CourtDataAccess.DbModel
         public DbSet<Complaint> Complaints { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<Petition> Petitions { get; set; }
+        public DbSet<ArraignmentHearing> Arraignments { get; set; }
 
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Complaint>()
-                .HasOne(c => c.Defendant)
-                .WithMany()
-                .HasForeignKey(c => c.DefendantId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Petition>()
-                .HasOne(p => p.Complaint)
-                .WithMany()
-                .HasForeignKey(p => p.ComplaintId)
-                .OnDelete(DeleteBehavior.Cascade);
-        }
     }
 }

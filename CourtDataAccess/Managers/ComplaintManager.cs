@@ -96,52 +96,73 @@ namespace CourtDataAccess.Managers
 
         public int DeleteComplaint(int id)
         {
+            var complaint = _context.Complaints
+                .FirstOrDefault(c => c.Id == id);
+
+            if (complaint == null)
+                return 0;
+
+            int defendantId = complaint.DefendantId;
+
+            _context.Complaints.Remove(complaint);
+
+            _context.SaveChanges();
+
+            return defendantId;
+        }
+
+        public IEnumerable<DefendantComplaintDto> GetAwatingComplaintSubmision()
+        {
             try
             {
-                var complaint = _context.Complaints.Find(id);
+                return
+                  (from c in _context.Complaints
+                   join d in _context.Defendants
+                       on c.DefendantId equals d.Id
 
-                if (complaint == null)
-                {
-                    return 0;
-                }
+                   where !c.ReadyForApproval
 
-                int defendantId = complaint.DefendantId;
+                   select new DefendantComplaintDto
+                   {
+                       ComplaintId = c.Id,
+                       Date = c.Date,
 
-                _context.Complaints.Remove(complaint);
-                _context.SaveChanges();
+                       DefendantName = d.FirstName + " " + d.LastName,
 
-                return defendantId;
+                       ComplaintType = c.ComplaintType.ToString()
+                   })
+                    .ToList();
             }
             catch (Exception ex)
             {
                 _logger.LogError(
                     ex,
-                    "Error deleting ComplaintId {ComplaintId}",
-                    id);
+                    "Error getting complaints awaiting submission.");
 
                 throw;
             }
         }
 
-        public IEnumerable<DefendantComplaintViewModel>
-  GetAwatingComplaintSubmision()
+        public IEnumerable<DefendantComplaintDto> GetAwatingDecision()
         {
             try
             {
-                return _context.Complaints
-                    .Where(c => !c.ReadyForApproval)
-                    .Select(c => new DefendantComplaintViewModel
-                    {
-                        ComplaintId = c.Id,
-                        Date = c.Date,
-                        DefendantName =
-                            c.Defendant.FirstName + " " +
-                            c.Defendant.LastName,
-                        ComplaintType = c.ComplaintType.ToString(),
-                        ComplainantName = c.Complainant != null
-                            ? c.Complainant.UserName
-                            : ""
-                    })
+                return
+                  (from c in _context.Complaints
+                   join d in _context.Defendants
+                       on c.DefendantId equals d.Id
+
+                   where c.MagistrateDecision  == null
+
+                   select new DefendantComplaintDto
+                   {
+                       ComplaintId = c.Id,
+                       Date = c.Date,
+
+                       DefendantName = d.FirstName + " " + d.LastName,
+
+                       ComplaintType = c.ComplaintType.ToString()
+                   })
                     .ToList();
             }
             catch (Exception ex)

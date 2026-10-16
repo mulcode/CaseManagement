@@ -42,3 +42,16 @@ body {
         color: #0d6efd;
         font-weight: bold;
     }
+
+.navbar-nav .nav-link.active-nav {
+    background-color: rgba(255, 255, 255, 0.22);
+    color: #ffffff !important;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff !important;
+    border-radius: 5px;
+}

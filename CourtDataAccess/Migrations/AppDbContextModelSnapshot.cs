@@ -22,6 +22,99 @@ namespace CourtDataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CourtDomain.Models.ArraignmentHearing", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AdditionalCharges")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ArraignmentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("ArraignmentTime")
+                        .HasColumnType("time");
+
+                    b.Property<int?>("AttorneyId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("BailStatus")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("BailStatusDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChargeDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("CourtDate")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnteredPlea")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ExaminedCriminalProcess")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("FinishAndLock")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("FoundGuilty")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("InquiredOfDefendant")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("JudgeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("JudgeSignature")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LegalCounsel")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("NextHearingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("NextHearingTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("PetitionId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ReceivedCopyOfCharge")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("SignDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("SignTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("WaivedArraignment")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("WaivedCounsel")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("WasInformed")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttorneyId");
+
+                    b.HasIndex("JudgeId");
+
+                    b.ToTable("Arraignments");
+                });
+
             modelBuilder.Entity("CourtDomain.Models.Complaint", b =>
                 {
                     b.Property<int>("Id")
@@ -174,7 +267,7 @@ namespace CourtDataAccess.Migrations
                     b.Property<int?>("Suffix")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan?>("Time")
+                    b.Property<TimeSpan>("Time")
                         .HasColumnType("time");
 
                     b.Property<string>("ZipCode")
@@ -321,6 +414,23 @@ namespace CourtDataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CourtDomain.Models.ArraignmentHearing", b =>
+                {
+                    b.HasOne("CourtDomain.Models.User", "Attorney")
+                        .WithMany()
+                        .HasForeignKey("AttorneyId");
+
+                    b.HasOne("CourtDomain.Models.User", "Judge")
+                        .WithMany()
+                        .HasForeignKey("JudgeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Attorney");
+
+                    b.Navigation("Judge");
                 });
 
             modelBuilder.Entity("CourtDomain.Models.Complaint", b =>

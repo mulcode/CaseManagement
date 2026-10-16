@@ -7,5 +7,7 @@
         public bool IsSubmitted { get; set; }
 
         public bool IsDecisionSaved { get; set; }
+        public int PetitionId { get; set; }
+        public bool IsPetitionFinished { get; set; }
     }
 }
