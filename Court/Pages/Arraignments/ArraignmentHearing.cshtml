@@ -25,6 +25,8 @@
                  <input type="hidden" asp-for="ComplaintId" />
                  <input type="hidden" asp-for="ArraignmentInfo.Id" />
                  <input type="hidden" asp-for="ArraignmentInfo.PetitionId" />
+                 <input type="hidden" asp-for="ArraignmentInfo.FinishAndLock" />
+
 
                     <div class="row mb-3">
                         <div class="col-md-4">
@@ -392,7 +394,7 @@
     }
       <a asp-page="/Arraignments/ArraignmentHearings"
          asp-route-complaintId="@Model.ComplaintId"
-       class="btn btn-danger">
+        class="btn btn-danger">
         Cancel
     </a>
    

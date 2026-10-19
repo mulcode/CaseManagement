@@ -466,7 +466,7 @@
                                  <td>
                                       @if (item.FinishAndLock)
                                     {
-                                        <a asp-page="/Petitions/Petition"
+                                        <a asp-page="/Arraignments/ArraignmentHearing"
                                            asp-route-complaintId="@item.ComplaintId"
                                            asp-route-mode="view"
                                            class="btn btn-info btn-sm">
@@ -475,7 +475,7 @@
                                     }
                                     else
                                     {
-                                        <a asp-page="/Petitions/Petition"
+                                        <a asp-page="/Arraignments/ArraignmentHearing"
                                            asp-route-complaintId="@item.ComplaintId"
                                            class="btn btn-primary btn-sm">
                                             Update

@@ -123,17 +123,39 @@ namespace CourtDataAccess.Managers
                 .ToList();
         }
 
+        //public IEnumerable<ArraignemntDto> GetCourteCases()
+        //{
+        //    try
+        //    {
+        //        return _context.Database
+        //            .SqlQuery<ArraignemntDto>($"EXEC GetUpcomingCourtCases")
+        //            .ToList();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error getting arraignment list");
+        //        throw;
+        //    }
+        //}
+
         public IEnumerable<ArraignemntDto> GetCourteCases()
         {
             try
             {
-                return _context.Database
-                    .SqlQuery<ArraignemntDto>($"EXEC GetUpcomingCourtCases")
+                var result = _context.Database
+                    .SqlQuery<ArraignemntDto>(
+                        $"EXEC dbo.GetUpcomingCourtCases")
                     .ToList();
+
+                _logger.LogInformation(
+                    "Upcoming court cases returned: {Count}",
+                    result.Count);
+
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting arraignment list");
+                _logger.LogError(ex, "Error getting upcoming court cases");
                 throw;
             }
         }

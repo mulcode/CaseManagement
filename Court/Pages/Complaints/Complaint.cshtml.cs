@@ -97,7 +97,7 @@ namespace Court.Pages.Complaints
                     TempData["SuccessMessage"] =
                         "Complaint Saved Successfully";
 
-                    // Redirect using the newly generated ID.
+                   
                     return RedirectToPage(
                         "/Complaints/Complaint",
                         new { id = ComplaintInfo.Id }

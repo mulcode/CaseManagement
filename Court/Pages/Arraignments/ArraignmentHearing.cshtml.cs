@@ -18,6 +18,7 @@ namespace Court.Pages.Arraignments
             a_complaint = complaint;
             a_petition = petition;
         }
+
         [BindProperty]
         public ArraignmentHearing ArraignmentInfo { get; set; } = new ArraignmentHearing();
 
@@ -25,10 +26,14 @@ namespace Court.Pages.Arraignments
         public IEnumerable<User> Judges { get; set; } = new List<User>();
         public IEnumerable<User> Attorneys { get; set; } = new List<User>();
 
-        [BindProperty(SupportsGet = true)]
+        //[BindProperty(SupportsGet = true)]
         public int ComplaintId { get; set; }
         public bool IsDecisionSaved { get; set; }
+
+        [BindProperty]
         public int PetitionId { get; set; }
+
+        [BindProperty]
         public bool FinishAndLock { get; set; }
 
         public IActionResult OnGet(int complaintId, int? id)
@@ -46,7 +51,7 @@ namespace Court.Pages.Arraignments
             
             PetitionId = petition.Id;
             FinishAndLock = petition.FinishAndLock;
-            ArraignmentInfo.PetitionId = petition.Id;
+            //ArraignmentInfo.PetitionId = petition.Id;
 
             if (id.HasValue)
             {
@@ -67,13 +72,13 @@ namespace Court.Pages.Arraignments
 
         public IActionResult OnPost()
         {
-            var petition = a_petition.GetPetitionByComplaintId(ComplaintId);
+            //var petition = a_petition.GetPetitionByComplaintId(ComplaintId);
 
             
-            PetitionId = petition.Id;
-            FinishAndLock = petition.FinishAndLock;
+            //PetitionId = petition.Id;
+            //FinishAndLock = petition.FinishAndLock;
 
-            ArraignmentInfo.PetitionId = petition.Id;
+            ArraignmentInfo.PetitionId = PetitionId;
 
             if (!ModelState.IsValid)
             {
