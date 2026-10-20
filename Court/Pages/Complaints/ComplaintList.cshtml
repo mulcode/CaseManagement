@@ -79,7 +79,7 @@
                                     <td>
                                         <!-- View Button -->
                                         <a asp-page="/Complaints/Complaint"
-                                           asp-route-id="@complaint.Id"
+                                           asp-route-complaintId="@complaint.Id"
                                            class="btn btn-sm btn-warning">
                                             View
                                         </a>
@@ -133,7 +133,7 @@
                     <div class="modal-footer">
                         <form method="post"
                               asp-page-handler="Delete"
-                              asp-route-id="@complaint.Id">
+                              asp-route-complaintId="@complaint.Id">
 
                             <button type="submit"
                                     class="btn btn-danger">

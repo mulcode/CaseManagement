@@ -57,7 +57,7 @@
         </div>
 
                 <div class="bg-danger text-white fw-bold px-3 py-2">
-                    @Model.Defendants.Count()
+                    @Model.TotalAwatingSubmission
                 </div>
 
             </div>
@@ -134,12 +134,47 @@
 
 </div>
 
+<nav aria-label="Complaints awaiting submission pagination">
+    <ul class="pagination">
+
+        <!-- Previous -->
+        <li class="page-item @(Model.SubmissionPageNumber <= 1 ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-submissionPage="@(Model.SubmissionPageNumber - 1)">
+                Previous
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        @for (int i = 1; i <= Model.SubmissionTotalPage; i++)
+        {
+            <li class="page-item @(Model.SubmissionPageNumber == i ? "active" : "")">
+                <a class="page-link"
+                   asp-page="/Dashboard"
+                   asp-route-submissionPage="@i">
+                    @i
+                </a>
+            </li>
+        }
+
+        <!-- Next -->
+        <li class="page-item @(Model.SubmissionPageNumber >= Model.SubmissionTotalPage ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-submissionPage="@(Model.SubmissionPageNumber + 1)">
+                Next
+            </a>
+        </li>
+
+    </ul>
+</nav>
 
 <!---Decision--->
 
 <div class="container-fluid mt-3">
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm" id="decisionWidget">
 
         <!-- Header -->
         <div class="card-header p-0 border-0">
@@ -152,7 +187,7 @@
         </div>
 
                 <div class="bg-danger text-white fw-bold px-3 py-2">
-                    @Model.Decisions.Count()
+                    @Model.TotalAwatingDecision
                 </div>
 
             </div>
@@ -228,6 +263,45 @@
     </div>
 
 </div>
+<nav aria-label="Complaints awaiting Decision pagination">
+    <ul class="pagination">
+
+        <!-- Previous -->
+        <li class="page-item @(Model.DecisionPageNumber <= 1 ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-decisionPage="@(Model.DecisionPageNumber - 1)"
+               asp-fragment="decisionWidget">
+                Previous
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        @for (int i = 1; i <= Model.DecisionTotalPage; i++)
+        {
+            <li class="page-item @(Model.DecisionPageNumber == i ? "active" : "")">
+                <a class="page-link"
+                   asp-page="/Dashboard"
+                   asp-route-decisionPage="@i"
+                   asp-fragment="decisionWidget">
+                    @i
+                </a>
+            </li>
+        }
+
+        <!-- Next -->
+        <li class="page-item @(Model.DecisionPageNumber >= Model.DecisionTotalPage ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-decisionPage="@(Model.DecisionPageNumber + 1)"
+               asp-fragment="decisionWidget">
+                Next
+            </a>
+        </li>
+
+    </ul>
+</nav>
+
 
  <!-- Awatining Petition-->
 
@@ -309,7 +383,7 @@
 <!-- Petitions -->
 <div class="container-fluid mt-3">
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm" id ="petitionWidget">
 
         <!-- Header -->
         <div class="card-header p-0 border-0">
@@ -321,7 +395,7 @@
                 </div>
 
                 <div class="bg-danger text-white fw-bold px-3 py-2">
-                    @Model.Petitions.Count
+                    @Model.TotalPetition
                 </div>
 
             </div>
@@ -402,6 +476,45 @@
         </div>
     </div>
 </div>
+
+<nav aria-label="Petition pagination">
+    <ul class="pagination">
+
+        <!-- Previous -->
+        <li class="page-item @(Model.PetitionPageNumber <= 1 ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-petitionPage="@(Model.PetitionPageNumber - 1)"
+               asp-fragment="petitionWidget">
+                Previous
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        @for (int i = 1; i <= Model.PetitionTotalPage; i++)
+        {
+            <li class="page-item @(Model.PetitionPageNumber == i ? "active" : "")">
+                <a class="page-link"
+                   asp-page="/Dashboard"
+                   asp-route-petitionPage="@i"
+                   asp-fragment="petitionWidget">
+                    @i
+                </a>
+            </li>
+        }
+
+        <!-- Next -->
+        <li class="page-item @(Model.PetitionPageNumber >= Model.PetitionTotalPage ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-petitionPage="@(Model.PetitionPageNumber + 1)"
+               asp-fragment="petitionWidget">
+                Next
+            </a>
+        </li>
+
+    </ul>
+</nav>
 
 
  <!-- Upcoming court Case -->

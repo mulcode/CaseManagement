@@ -20,8 +20,12 @@ namespace Court.Pages.Arraignments
         }
 
         public int ComplaintId { get; set; }
+
+        [BindProperty]
         public int PetitionId { get; set; }
         public bool IsDecisionSaved { get; set; }
+
+        [BindProperty]
         public bool IsPetitionFinished { get; set; }
         public List<ArraignmentHearing> Arraignments { get; set; } = new();
         public List<User> Users { get; set; } = new();
@@ -33,19 +37,20 @@ namespace Court.Pages.Arraignments
             var complaint = a_complaint.GetComplaint(complaintId);
 
             if (complaint == null)
-                return NotFound();
+                return Content($"Complaint not found. ComplaintId = {complaintId}");
 
             IsDecisionSaved = complaint.MagistrateDecision.HasValue;
 
             var petition = a_petition.GetPetitionByComplaintId(complaintId);
 
             if (petition == null)
-                return NotFound();
+                return Content($"Petition not found for ComplaintId = {complaintId}");
 
             PetitionId = petition.Id;
             IsPetitionFinished = petition.FinishAndLock;
 
-            Arraignments = a_arraignment.GetArraignmentsByPetitionId(PetitionId);
+            Arraignments = a_arraignment
+                .GetArraignmentsByPetitionId(PetitionId);
 
             Users = a_user.GetUsersByRole(3).ToList();
 

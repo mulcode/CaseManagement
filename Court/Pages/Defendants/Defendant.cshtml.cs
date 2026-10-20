@@ -19,32 +19,27 @@ namespace Court.Pages.Defendants
         }
 
         [BindProperty]
-        public Defendant DefendantInfo { get; set; } = new Defendant();
+        public Defendant DefendantInfo { get; set; } 
 
         [BindProperty]
         public IFormFile? ImageFile { get; set; }
 
-        public IActionResult OnGet(int? id)
+        public IActionResult OnGet(int defendantId) 
         {
             try
             {
-                if (id.HasValue)
+                if (defendantId > 0)
                 {
-                    var defendant = m_defendant.GetDefendant(id.Value);
-
-                    if (defendant == null)
-                    {
-                        return NotFound();
-                    }
-
-                    DefendantInfo = defendant;
+                    DefendantInfo = m_defendant.GetDefendant(defendantId);
                 }
                 else
                 {
-                    DefendantInfo = new Defendant();
-
-                    DefendantInfo.Date = DateTime.Now;
-                    DefendantInfo.DateOfBirth = DateTime.Now;
+                    DefendantInfo = new Defendant()
+                    {
+                        Date = DateTime.Now,
+                        DateOfBirth = DateTime.Now
+                    };
+                   
                 }
 
                 return Page();
@@ -54,7 +49,7 @@ namespace Court.Pages.Defendants
                 _logger.LogError(
                     ex,
                     "Error loading defendant. DefendantId: {DefendantId}",
-                    id);
+                    defendantId);
 
                 TempData["ErrorMessage"] =
                     "An error occurred while loading defendant information.";
@@ -85,15 +80,13 @@ namespace Court.Pages.Defendants
                 {
                     m_defendant.AddDefendant(DefendantInfo);
 
-                    TempData["SuccessMessage"] =
-                        "Defendant Created Successfully";
+                    TempData["SuccessMessage"] = "Defendant Created Successfully";
                 }
                 else
                 {
                     m_defendant.UpdateDefendant(DefendantInfo);
 
-                    TempData["SuccessMessage"] =
-                        "Defendant Updated Successfully";
+                    TempData["SuccessMessage"] = "Defendant Updated Successfully";
                 }
 
                 return RedirectToPage("/Defendants/DefendantList");

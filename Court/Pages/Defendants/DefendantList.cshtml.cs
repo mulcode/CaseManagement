@@ -56,6 +56,7 @@ namespace Court.Pages.Defendants
 
                 return Page();
             }
+
             catch (Exception ex)
             {
                 _logger.LogError(

@@ -19,8 +19,7 @@ namespace Court.Pages.Complaints
         }
 
         [BindProperty]
-        public List<Complaint> Complaints { get; set; }
-            = new List<Complaint>();
+        public List<Complaint> Complaints { get; set; } = new List<Complaint>();
 
         public int DefendantId { get; set; }
 
@@ -30,9 +29,7 @@ namespace Court.Pages.Complaints
             {
                 DefendantId = id;
 
-                Complaints = c_complaint
-                    .GetComplaintsByDefendant(id)
-                    .ToList();
+                Complaints = c_complaint.GetComplaintsByDefendant(id).ToList();
 
                 return Page();
             }
@@ -50,14 +47,14 @@ namespace Court.Pages.Complaints
             }
         }
 
-        public IActionResult OnPostDelete(int id)
+        public IActionResult OnPostDelete(int complaintId)
         {
             try
             {
                 _logger.LogInformation(
-                    "Deleting complaint with ID: {ComplaintId}", id);
+                    "Deleting complaint with ID: {ComplaintId}", complaintId);
 
-                var defendantId = c_complaint.DeleteComplaint(id);
+                var defendantId = c_complaint.DeleteComplaint(complaintId);
 
                 if (defendantId != 0)
                 {
@@ -68,7 +65,7 @@ namespace Court.Pages.Complaints
                 }
 
                 TempData["ErrorMessage"] =
-                    $"Complaint with ID {id} was not found.";
+                    $"Complaint with ID {complaintId} was not found.";
 
                 return RedirectToPage("/Complaints/ComplaintList");
             }
@@ -77,7 +74,7 @@ namespace Court.Pages.Complaints
                 // Actual error console-e dekhabe
                 Console.WriteLine($"DELETE ERROR: {ex}");
                 _logger.LogError(ex,
-                    "Error deleting complaint {ComplaintId}", id);
+                    "Error deleting complaint {ComplaintId}", complaintId);
 
                 TempData["ErrorMessage"] = ex.InnerException?.Message
                     ?? ex.Message;

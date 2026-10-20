@@ -96,7 +96,7 @@ namespace CourtDataAccess.Managers
         }
 
 
-        public List<PetitionDto> GetPetitions()
+        public List<PetitionDto> GetPetitions(int pageNumber,int pageSize)
         {
             try
             {
@@ -105,7 +105,11 @@ namespace CourtDataAccess.Managers
                     .ToList();
 
 
-                return result;
+                return result
+                     .OrderBy(d => d.ComplaintId)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
             }
             catch (Exception ex)
             {
@@ -114,6 +118,21 @@ namespace CourtDataAccess.Managers
             }
         }
 
+        public int GetPetitionCount()
+        {
+            try
+            {
+                return _context.Petitions.Count();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error getting total petition count.");
+
+                throw;
+            }
+        }
 
         public List<ComplaintWithoutPetitionDto> GetComplaintsWithoutPetition()
         {
@@ -123,21 +142,7 @@ namespace CourtDataAccess.Managers
                 .ToList();
         }
 
-        //public IEnumerable<ArraignemntDto> GetCourteCases()
-        //{
-        //    try
-        //    {
-        //        return _context.Database
-        //            .SqlQuery<ArraignemntDto>($"EXEC GetUpcomingCourtCases")
-        //            .ToList();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error getting arraignment list");
-        //        throw;
-        //    }
-        //}
-
+    
         public IEnumerable<ArraignemntDto> GetCourteCases()
         {
             try

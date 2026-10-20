@@ -18,7 +18,7 @@ namespace Court.Pages.Complaints
         }
 
         [BindProperty]
-        public Complaint ComplaintInfo { get; set; } = new Complaint();
+        public Complaint ComplaintInfo { get; set; } 
 
         public int ComplaintId { get; set; }
         public int PetitionId { get; set; }
@@ -26,39 +26,31 @@ namespace Court.Pages.Complaints
         public bool IsPetitionFinished { get; set; }
 
 
-        public IActionResult OnGet(int? id, int? defendantId)
+        public IActionResult OnGet(int complaintId, int defendantId) 
         {
             try
             {
-                if (id.HasValue)
+                if (complaintId > 0)
                 {
-                    ComplaintInfo = c_complaint.GetComplaint(id.Value);
-
-                    if (ComplaintInfo == null)
-                    {
-                        return NotFound();
-                    }
+                    ComplaintInfo = c_complaint.GetComplaint(complaintId);
                 }
                 else
                 {
-                    if (!defendantId.HasValue)
+                    ComplaintInfo = new Complaint()
                     {
-                        return BadRequest();
-                    }
-
-                    ComplaintInfo.DefendantId = defendantId.Value;
-                    ComplaintInfo.OffesnseDate = DateTime.Now;
-                    ComplaintInfo.Date = DateTime.Today;
+                        DefendantId = defendantId,
+                        OffesnseDate = DateTime.Now,
+                        Date = DateTime.Today
+                    };
                 }
 
                 ComplaintId = ComplaintInfo.Id;
 
                 if (ComplaintId > 0)
                 {
-                    IsDecisionSaved =
-                        ComplaintInfo.MagistrateDecision.HasValue;
+                    IsDecisionSaved = ComplaintInfo.MagistrateDecision.HasValue;
 
-                    var petition = c_petition.GetPetitionByComplaintId(ComplaintId);
+                    Petition petition = c_petition.GetPetitionByComplaintId(ComplaintId);
 
                     if (petition != null)
                     {
@@ -77,7 +69,7 @@ namespace Court.Pages.Complaints
                     "An error occurred while loading the complaint."
                 );
 
-                return Page();
+                return RedirectToPage("/Complaints/ComplaintList");
             }
         }
 
@@ -94,41 +86,30 @@ namespace Court.Pages.Complaints
                 {
                     c_complaint.AddComplaint(ComplaintInfo);
 
-                    TempData["SuccessMessage"] =
-                        "Complaint Saved Successfully";
+                    TempData["SuccessMessage"] = "Complaint Saved Successfully";
 
                    
-                    return RedirectToPage(
-                        "/Complaints/Complaint",
-                        new { id = ComplaintInfo.Id }
+                    return RedirectToPage( "/Complaints/Complaint",
+                        new { complaintId = ComplaintInfo.Id }
                     );
                 }
                 else
                 {
-                    var complaint =
-                        c_complaint.GetComplaint(ComplaintInfo.Id);
-
-                    if (complaint == null)
-                    {
-                        return NotFound();
-                    }
+                    Complaint complaint = c_complaint.GetComplaint(ComplaintInfo.Id);
 
                     complaint.Date = ComplaintInfo.Date;
                     complaint.Time = ComplaintInfo.Time;
                     complaint.OffesnseDate = ComplaintInfo.OffesnseDate;
                     complaint.ComplaintType = ComplaintInfo.ComplaintType;
-                    complaint.SummaryOfComplaint =
-                    ComplaintInfo.SummaryOfComplaint;
+                    complaint.SummaryOfComplaint = ComplaintInfo.SummaryOfComplaint;
 
                     c_complaint.UpdateComplaint(complaint);
 
-                    TempData["SuccessMessage"] =
-                        "Complaint Updated Successfully";
+                    TempData["SuccessMessage"] = "Complaint Updated Successfully";
                 }
 
-                return RedirectToPage(
-                    "/Complaints/Complaint",
-                    new { id = ComplaintInfo.Id }
+                return RedirectToPage( "/Complaints/Complaint",
+                    new { complaintId = ComplaintInfo.Id }
                 );
             }
             catch (Exception ex)

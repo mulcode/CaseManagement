@@ -15,7 +15,8 @@ namespace CourtDataAccess.Interfaces
         void UpdatePetition(Petition petition);
         Petition GetPetitionByComplaintId(int complaintId);
 
-        List<PetitionDto> GetPetitions();
+        List<PetitionDto> GetPetitions(int pageNumber, int pageSize);
+        int GetPetitionCount();
 
         List<ComplaintWithoutPetitionDto> GetComplaintsWithoutPetition();
 

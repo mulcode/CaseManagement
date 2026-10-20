@@ -78,8 +78,6 @@ namespace CourtDataAccess.Managers
         {
             try
             {
-                // Existing tracked entity হলে SaveChanges() যথেষ্ট।
-                // Detached entity হলে Update() প্রয়োজন হতে পারে।
                 _context.Complaints.Update(complaint);
                 _context.SaveChanges();
             }
@@ -111,7 +109,7 @@ namespace CourtDataAccess.Managers
             return defendantId;
         }
 
-        public IEnumerable<DefendantComplaintDto> GetAwatingComplaintSubmision()
+        public IEnumerable<DefendantComplaintDto> GetAwatingComplaintSubmision(int pageNumber, int pageSize)
         {
             try
             {
@@ -131,7 +129,10 @@ namespace CourtDataAccess.Managers
 
                        ComplaintType = c.ComplaintType.ToString()
                    })
-                    .ToList();
+                   .OrderBy(d=> d.ComplaintId)
+                   .Skip((pageNumber-1)*pageSize)
+                   .Take(pageSize)
+                   .ToList();
             }
             catch (Exception ex)
             {
@@ -143,7 +144,23 @@ namespace CourtDataAccess.Managers
             }
         }
 
-        public IEnumerable<DefendantComplaintDto> GetAwatingDecision()
+        public int GetAwatingComplaintCount()
+        {
+            try
+            {
+                return _context.Complaints.Count(c => !c.ReadyForApproval);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error getting total complaint count.");
+
+                throw;
+            }
+        }
+
+        public IEnumerable<DefendantComplaintDto> GetAwatingDecision(int pageNumber, int pageSize)
         {
             try
             {
@@ -163,13 +180,32 @@ namespace CourtDataAccess.Managers
 
                        ComplaintType = c.ComplaintType.ToString()
                    })
-                    .ToList();
+                   .OrderBy(d => d.ComplaintId)
+                   .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
             }
             catch (Exception ex)
             {
                 _logger.LogError(
                     ex,
                     "Error getting complaints awaiting submission.");
+
+                throw;
+            }
+        }
+
+        public int GetAwatingDecisionCount()
+        {
+            try
+            {
+                return _context.Complaints.Count(c => c.MagistrateDecision == null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error getting total decision count.");
 
                 throw;
             }

@@ -49,9 +49,7 @@ namespace CourtDataAccess.Managers
             }
         }
 
-        public IEnumerable<Defendant> GetDefendants(
-            int pageNumber,
-            int pageSize)
+        public IEnumerable<Defendant> GetDefendants( int pageNumber,int pageSize)
         {
             try
             {
