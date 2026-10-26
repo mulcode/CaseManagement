@@ -24,7 +24,9 @@ namespace Court.Pages.Defendants
         [BindProperty]
         public IFormFile? ImageFile { get; set; }
 
-        public IActionResult OnGet(int defendantId) 
+        [BindProperty]
+        public bool IsEditMode { get; set; }
+        public IActionResult OnGet(int defendantId, bool edit) 
         {
             try
             {
@@ -41,7 +43,7 @@ namespace Court.Pages.Defendants
                     };
                    
                 }
-
+                IsEditMode = defendantId == 0 || edit;
                 return Page();
             }
             catch (Exception ex)
@@ -62,6 +64,8 @@ namespace Court.Pages.Defendants
         {
             try
             {
+                IsEditMode = true;
+
                 if (!ModelState.IsValid)
                 {
                     return Page();
@@ -89,7 +93,7 @@ namespace Court.Pages.Defendants
                     TempData["SuccessMessage"] = "Defendant Updated Successfully";
                 }
 
-                return RedirectToPage("/Defendants/DefendantList");
+                return RedirectToPage("/Defendants/DefendantList", new {defendantId = DefendantInfo.Id });
             }
             catch (Exception ex)
             {

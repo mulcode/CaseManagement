@@ -21,6 +21,7 @@ namespace CourtDataAccess.DbModel
         public DbSet<Document> Documents { get; set; }
         public DbSet<Petition> Petitions { get; set; }
         public DbSet<ArraignmentHearing> Arraignments { get; set; }
+        public DbSet<Summon> Summons { get; set; }
 
     }
 }

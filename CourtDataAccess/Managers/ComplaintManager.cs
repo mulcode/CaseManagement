@@ -19,7 +19,7 @@ namespace CourtDataAccess.Managers
             _logger = logger;
         }
 
-        public IEnumerable<Complaint> GetComplaintsByDefendant(int defendantId)
+        public IList<Complaint> GetComplaintsByDefendant(int defendantId)
         {
             try
             {
@@ -43,6 +43,7 @@ namespace CourtDataAccess.Managers
             try
             {
                 return _context.Complaints
+                    .Include(c => c.Defendant)
                     .FirstOrDefault(c => c.Id == id);
             }
             catch (Exception ex)
@@ -109,7 +110,7 @@ namespace CourtDataAccess.Managers
             return defendantId;
         }
 
-        public IEnumerable<DefendantComplaintDto> GetAwatingComplaintSubmision(int pageNumber, int pageSize)
+        public IList<DefendantComplaintDto> GetAwatingComplaintSubmision(int pageNumber, int pageSize)
         {
             try
             {
@@ -160,7 +161,7 @@ namespace CourtDataAccess.Managers
             }
         }
 
-        public IEnumerable<DefendantComplaintDto> GetAwatingDecision(int pageNumber, int pageSize)
+        public IList<DefendantComplaintDto> GetAwatingDecision(int pageNumber, int pageSize)
         {
             try
             {

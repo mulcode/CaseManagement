@@ -1,3 +1,4 @@
+using Court.ViewModels;
 using CourtDataAccess.Interfaces;
 using CourtDomain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ namespace Court.Pages.Complaints
     public class ComplaintDecisionModel : PageModel
     {
         private readonly IComplaint c_complaint;
+        private readonly IDefendant d_defendant;
         private readonly IUser _user;
         private readonly IPetition d_petition;
         private readonly ILogger<ComplaintDecisionModel> _logger;
@@ -16,64 +18,48 @@ namespace Court.Pages.Complaints
             IComplaint complaint,
             IUser user,
             IPetition petition,
+            IDefendant defendant,
             ILogger<ComplaintDecisionModel> logger)
         {
             c_complaint = complaint;
             _user = user;
             d_petition = petition;
+            d_defendant = defendant;
             _logger = logger;
         }
 
         [BindProperty]
         public Complaint ComplaintInfo { get; set; }
-
-        public IEnumerable<User> Users { get; set; }
+        public ComplaintTabsViewModels ComplaintTabs { get; set; }
+        public IList<User> Users { get; set; }
 
         public string ErrorMessage { get; set; }
         public int ComplaintId { get; set; }
-        public int PetitionId { get; set; }
-        public bool IsDecisionSaved { get; set; }
-        public bool IsPetitionFinished { get; set; }
-
 
         public IActionResult OnGet(int complaintId)
         {
             try
             {
-                ComplaintInfo = c_complaint.GetComplaint(complaintId);
-
                 ComplaintId = complaintId;
 
-                if (d_petition == null)
-                {
-                    throw new InvalidOperationException("IPetition dependency is null.");
-                }
-
-                
-
-                var petition = d_petition.GetPetitionByComplaintId(complaintId);
-
-                if (petition != null)
-                {
-                    PetitionId = petition.Id;
-                    IsPetitionFinished = petition.FinishAndLock;
-                }
-
-                IsDecisionSaved = ComplaintInfo?.MagistrateDecision.HasValue == true;
-
+                ComplaintInfo = c_complaint.GetComplaint(complaintId);
                 ComplaintInfo.ReceivedDateByMagistrate = DateTime.Today;
 
-                if (!User.IsInRole("Magistrate"))
+                Users = _user.GetUsersByRoleName("Magistrate").ToList();
+
+                if (!User.IsInRole("Magistrate") && ComplaintInfo.MagistrateDecision == null)
                 {
                     ErrorMessage =
                         "You are not authorized to give decision.";
                 }
+
                 else if (!ComplaintInfo.ReadyForApproval)
                 {
                     ErrorMessage = "Please submit the complaint first.";
                 }
              
-                Users = _user.GetUsersByRoleName("Magistrate").ToList();
+
+                LoadTabs();
 
                 return Page();
             }
@@ -95,18 +81,16 @@ namespace Court.Pages.Complaints
         {
             try
             {
+                var complaint = c_complaint.GetComplaint(ComplaintInfo.Id);
+
+                ComplaintId = complaint.Id;
+
                 if (!User.IsInRole("Magistrate"))
                 {
                     ErrorMessage = "You are not authorized to give decision.";
                     Users = _user.GetUsersByRoleName("Magistrate").ToList();
+                    LoadTabs();
                     return Page();
-                }
-
-                var complaint = c_complaint.GetComplaint(ComplaintInfo.Id);
-
-                if (complaint == null)
-                {
-                    return NotFound();
                 }
 
                 if (!complaint.ReadyForApproval)
@@ -114,6 +98,8 @@ namespace Court.Pages.Complaints
                     ErrorMessage = "Please submit the complaint first.";
                     ComplaintInfo = complaint;
                     Users = _user.GetUsersByRoleName("Magistrate").ToList();
+
+                    LoadTabs();
                     return Page();
                 }
 
@@ -122,6 +108,8 @@ namespace Court.Pages.Complaints
                     ErrorMessage = "A decision has already been saved.";
                     ComplaintInfo = complaint;
                     Users = _user.GetUsersByRoleName("Magistrate").ToList();
+
+                    LoadTabs();
                     return Page();
                 }
 
@@ -150,37 +138,25 @@ namespace Court.Pages.Complaints
                 }
 
                 // If validation fails, do not save
-                bool hasDecisionErrors =
-                    ComplaintInfo.MagistrateId <= 0 ||
+                bool hasDecisionErrors = ComplaintInfo.MagistrateId <= 0 ||
                     string.IsNullOrWhiteSpace(ComplaintInfo.MagistrateSignature) ||
                     !ComplaintInfo.MagistrateDecision.HasValue;
 
                 if (hasDecisionErrors)
                 {
-                    ComplaintId = complaint.Id;
+                    Users = _user.GetUsersByRoleName("Magistrate").ToList();
 
                     ComplaintInfo.ReadyForApproval = complaint.ReadyForApproval;
                     ComplaintInfo.MagistrateDecision = complaint.MagistrateDecision;
 
-                    var petition = d_petition.GetPetitionByComplaintId(complaint.Id);
-
-                    if (petition != null)
-                    {
-                        PetitionId = petition.Id;
-                        IsPetitionFinished = petition.FinishAndLock;
-                    }
-
-                    IsDecisionSaved = complaint.MagistrateDecision.HasValue;
-                    Users = _user.GetUsersByRoleName("Magistrate").ToList();
-
+                    LoadTabs();
                     return Page();
                 }
 
-                // Save only after validation passes
+
                 complaint.MagistrateId = ComplaintInfo.MagistrateId;
                 complaint.MagistrateSignature = ComplaintInfo.MagistrateSignature;
-                complaint.ReceivedDateByMagistrate =
-                    ComplaintInfo.ReceivedDateByMagistrate;
+                complaint.ReceivedDateByMagistrate = ComplaintInfo.ReceivedDateByMagistrate;
                 complaint.MagistrateDecision = ComplaintInfo.MagistrateDecision;
 
                 c_complaint.UpdateComplaint(complaint);
@@ -201,8 +177,31 @@ namespace Court.Pages.Complaints
                 ErrorMessage = "An error occurred while saving the decision.";
                 Users = _user.GetUsersByRoleName("Magistrate").ToList();
 
+                LoadTabs();
                 return Page();
             }
+        }
+
+        private void LoadTabs()
+        {
+            var complaint = c_complaint.GetComplaint(ComplaintId);
+
+            var petition = d_petition.GetPetitionByComplaintId(ComplaintId);
+
+            var defendant = d_defendant.GetDefendant(complaint.DefendantId);
+
+            ComplaintTabs = new ComplaintTabsViewModels
+            {
+                ComplaintId = complaint.Id,
+                DefendantId = complaint.DefendantId,
+                DefendantName = $"{defendant.FirstName} {defendant.LastName}".Trim(),
+                EnrolledNumber = defendant.EnrolledNumber,
+                Address = defendant.Address,
+                Gender = defendant.Gender,
+                IsDecisionSaved = complaint.MagistrateDecision.HasValue,
+                PetitionId = petition?.Id ?? 0,
+                IsPetitionFinished = petition?.FinishAndLock ?? false
+            };
         }
 
     }

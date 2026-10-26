@@ -42,6 +42,7 @@
     </script> 
 }
 
+
 <div class="container-fluid mt-3">
 
     <div class="card shadow-sm">
@@ -307,7 +308,7 @@
 
     <div class="container-fluid mt-3">
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm" id="petitionAwatingWidget">
 
        
         <div class="card-header p-0 border-0">
@@ -319,7 +320,7 @@
                 </div>
 
                 <div class="bg-danger text-white fw-bold px-3 py-2">
-                    @Model.ComplaintsWithoutPetition.Count
+                    @Model.TotalAwatingPetition
                 </div>
 
             </div>
@@ -378,6 +379,45 @@
         </div>
     </div>
 </div>
+<nav aria-label="Awating Petition pagination">
+    <ul class="pagination">
+
+        <!-- Previous -->
+        <li class="page-item @(Model.PetitionAwatingPageNumber <= 1 ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-petitionAwatingPage="@(Model.PetitionAwatingPageNumber - 1)"
+               asp-fragment="petitionAwatingWidget">
+                Previous
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        @for (int i = 1; i <= Model.PetitionAwatingTotalPage; i++)
+        {
+            <li class="page-item @(Model.PetitionAwatingPageNumber == i ? "active" : "")">
+                <a class="page-link"
+                   asp-page="/Dashboard"
+                   asp-route-petitionAwatingPage="@i"
+                   asp-fragment="petitionAwatingWidget">
+                    @i
+                </a>
+            </li>
+        }
+
+        <!-- Next -->
+        <li class="page-item @(Model.PetitionAwatingPageNumber >= Model.PetitionAwatingTotalPage ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-petitionAwatingPage="@(Model.PetitionAwatingPageNumber + 1)"
+               asp-fragment="petitionAwatingWidget">
+                Next
+            </a>
+        </li>
+
+    </ul>
+</nav>
+
 
 
 <!-- Petitions -->
@@ -520,7 +560,7 @@
  <!-- Upcoming court Case -->
 <div class="container-fluid mt-3">
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm" id="arraignmentWidget">
         <div class="card-header p-0 border-0">
             <div class="d-flex align-items-center">
 
@@ -530,7 +570,7 @@
                 </div>
 
                 <div class="bg-danger text-white fw-bold px-3 py-2">
-                    @Model.Arraignments.Count
+                    @Model.TotalArraignment
                 </div>
 
             </div>
@@ -611,6 +651,46 @@
         </div>
     </div>
 </div>
+    </div>
+</div>
+<nav aria-label="Upcoming court cases pagination">
+    <ul class="pagination">
+
+        <!-- Previous -->
+        <li class="page-item @(Model.ArraignmentPageNumber <= 1 ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-arraignmentPage="@(Model.ArraignmentPageNumber - 1)"
+               asp-fragment="arraignmentWidget">
+                Previous
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        @for (int i = 1; i <= Model.ArraignmentTotalPage; i++)
+        {
+            <li class="page-item @(Model.ArraignmentPageNumber == i ? "active" : "")">
+                <a class="page-link"
+                   asp-page="/Dashboard"
+                   asp-route-arraignmentPage="@i"
+                   asp-fragment="arraignmentWidget">
+                    @i
+                </a>
+            </li>
+        }
+
+        <!-- Next -->
+        <li class="page-item @(Model.ArraignmentPageNumber >= Model.ArraignmentTotalPage ? "disabled" : "")">
+            <a class="page-link"
+               asp-page="/Dashboard"
+               asp-route-arraignmentPage="@(Model.ArraignmentPageNumber + 1)"
+               asp-fragment="arraignmentWidget">
+                Next
+            </a>
+        </li>
+
+    </ul>
+</nav>
    
 
 <!--Search -->

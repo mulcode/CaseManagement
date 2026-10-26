@@ -1,0 +1,62 @@
+﻿@model int
+
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    bool isDetails = currentPage.Equals("/Defendants/Defendant", StringComparison.OrdinalIgnoreCase);
+    bool isComplaints = !isDetails;
+}
+
+<div class="defendant-sidebar">
+    <nav class="sidebar-nav">
+        <a class="sidebar-link @(isComplaints ? "active" : "")"
+           asp-page="/Complaints/ComplaintList"
+           asp-route-defendantId="@Model">
+            Complaints
+        </a>
+
+        <a class="sidebar-link @(isDetails ? "active" : "")"
+           asp-page="/Defendants/Defendant"
+           asp-route-defendantId="@Model">
+            Defendant Details
+        </a>
+
+    </nav>
+</div>
+
+<style>
+    .defendant-sidebar {
+        --sb-bg: #14213d;
+        --sb-text: #ffffff;
+        --sb-accent: #4dabf7;
+        --sb-divider: rgba(255, 255, 255, 0.1);
+        /* height: 10%;
+        min-height: calc(100vh - 120px);
+        background-color: var(--sb-bg); */
+    }
+
+        .defendant-sidebar .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .defendant-sidebar .sidebar-link {
+            display: block;
+            padding: 20px 26px;
+            border-bottom: 1px solid var(--sb-divider);
+            color: var(--sb-text);
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+
+            .defendant-sidebar .sidebar-link:hover {
+                background-color: rgba(255, 255, 255, 0.06);
+                color: var(--sb-accent);
+            }
+
+            .defendant-sidebar .sidebar-link.active {
+                color: var(--sb-accent);
+                border-left-color: var(--sb-accent);
+            }
+</style>

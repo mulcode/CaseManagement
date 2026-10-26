@@ -4,27 +4,56 @@
     var currentPage = ViewContext.HttpContext.Request.Path.Value;
 }
 
-<ul class="nav nav-tabs mb-4">
+<div class="card mb-3">
+    <div class="card-body bg-body-tertiary">
+        <div class="row">
+            <div class="col-md-4">
+                <strong>Defendant Name:</strong>
+                @Model.DefendantName
+            </div>
+            <div class="col-md-4">
+                <strong>EnrolledNumber :</strong>
+                @Model.EnrolledNumber
+            </div>
+        </div>
+        <div class="row">
+        
+            <div class="col-md-4">
+                <strong>Gender:</strong>
+                @Model.Gender
+            </div>
+            <div class="col-md-4">
+                <strong>Defendant Address:</strong>
+                @Model.Address
+            </div>
+        </div>
+    </div>
+</div>
 
+<ul class="nav nav-tabs mb-4">
     <!-- Complaints -->
     <li class="nav-item">
         <a class="nav-link @(currentPage?.Equals("/Complaints/Complaint", StringComparison.OrdinalIgnoreCase) == true ? "active" : "")"
            asp-page="/Complaints/Complaint"
-           asp-route-id="@Model.ComplaintId">
+           asp-route-complaintId="@Model.ComplaintId"
+           asp-route-defendantId="@Model.DefendantId">
             Complaints
         </a>
     </li>
 
     <!-- Documents -->
-    @if(Model.ComplaintId > 0)
+    @if (Model.ComplaintId > 0)
     {
-         <li class="nav-item">
-        <a class="nav-link @(currentPage?.Equals("/Documents/Document", StringComparison.OrdinalIgnoreCase) == true ? "active" : "")"
-           asp-page="/Documents/Document"
-           asp-route-complaintId="@Model.ComplaintId">
-            Documents
-        </a>
-    </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentPage != null &&
+                                 (currentPage.Equals("/Documents/Document", StringComparison.OrdinalIgnoreCase) ||
+                                  currentPage.Equals("/Documents/DocumentList", StringComparison.OrdinalIgnoreCase))
+                                 ? "active" : "")"
+               asp-page="/Documents/DocumentList"
+               asp-route-complaintId="@Model.ComplaintId">
+                Documents
+            </a>
+        </li>
     }
    
 
@@ -93,5 +122,29 @@
     </li>
 }
   
+
+    @if (Model.IsPetitionFinished)
+    {
+        <li class="nav-item">
+            <a class="nav-link @(
+               currentPage?.Equals(
+                   "/Summons/Addsummons",
+                   StringComparison.OrdinalIgnoreCase) == true
+               ||
+               currentPage?.Equals(
+                   "/Summons/SummonList",
+                   StringComparison.OrdinalIgnoreCase) == true
+               ||
+               currentPage?.Equals(
+                   "/Summons",
+                   StringComparison.OrdinalIgnoreCase) == true
+                   ? "active" : "")"
+               asp-page="/Summons/SummonList"
+               asp-route-complaintId="@Model.ComplaintId">
+                Summons
+            </a>
+        </li>
+    }
+
 
 </ul>

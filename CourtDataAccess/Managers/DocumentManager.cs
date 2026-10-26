@@ -19,20 +19,11 @@ namespace CourtDataAccess.Managers
             _logger = logger;
         }
 
-        public List<Document> GetAllDocument()
+        public IList<Document> GetDocumentsByComplaint(int complaintId)
         {
-            try
-            {
-                return _context.Documents.ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(
-                    ex,
-                    "Error getting all documents.");
-
-                throw;
-            }
+            return _context.Documents
+                .Where(d => d.ComplaintId == complaintId)
+                .ToList();
         }
 
         public Document GetDocument(int id)

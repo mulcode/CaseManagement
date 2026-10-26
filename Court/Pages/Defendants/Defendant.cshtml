@@ -1,25 +1,39 @@
 ﻿@page "/Defendants"
-@{
-    ViewData["Title"] = "Defendant";
-}
 @model Court.Pages.Defendants.DefendantModel
 @using CourtDomain.Enums
+
 @{
+    ViewData["Title"] = "Defendant";
+    if (Model.DefendantInfo.Id > 0)
+    {
+        Layout = "_DefendantLayout";
+        ViewData["DefendantId"] = Model.DefendantInfo.Id;
+    }
 }
 
-<div class="container mt-5">
+<div class="card shadow">
+    <div class="card-body p-4">
 
-    <div class="card shadow">
-           <h3 class="pb-2 mb-4 mt-3 px-2 border-bottom border-3"
-    style="border-color: #5b7c99 !important;">
-    Defendant Information
-</h3>
-        <div class="card-body p-4">
-        
-            <form method="post" enctype="multipart/form-data">
+        <h3 class="pb-2 mb-4 border-bottom border-3"
+            style="border-color: #5b7c99 !important;">
+            Defendant Details
+        </h3>
 
-                <input type="hidden" asp-for="DefendantInfo.Id" />
-                <!-- First Row -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <form method="post" enctype="multipart/form-data">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="DefendantInfo.Id" />
+
+            <fieldset disabled="@(!Model.IsEditMode)" class="border-0 p-0 m-0">
                 <div class="row mb-3">
 
                     <div class="col-md-4">
@@ -27,22 +41,21 @@
                             Date<span style="color:red">*</span>
                         </label>
                         <input asp-for="DefendantInfo.Date" type="date"
-                             
                                class="form-control"
-                               required >
-                               <span asp-validation-for="DefendantInfo.Date"></span>
+                               required>
+                        <span asp-validation-for="DefendantInfo.Date"></span>
                     </div>
 
-            <div class="col-md-4">
-             <label class="form-label">
-                Time<span style="color:red">*</span>
-            </label>
+                    <div class="col-md-4">
+                        <label class="form-label">
+                            Time<span style="color:red">*</span>
+                        </label>
 
-              <input type="time"
-                   asp-for="DefendantInfo.Time"
-                   class="form-control" />
+                        <input type="time"
+                               asp-for="DefendantInfo.Time"
+                               class="form-control" />
                         <span asp-validation-for="DefendantInfo.Time" class="text-danger small"></span>
-              </div>
+                    </div>
 
                 </div>
 
@@ -57,8 +70,8 @@
                         <input type="text"
                                asp-for="DefendantInfo.FirstName"
                                class="form-control"
-                               required >
-                               <span asp-validation-for="DefendantInfo.FirstName" class ="text-danger small" ></span>
+                               required>
+                        <span asp-validation-for="DefendantInfo.FirstName" class="text-danger small"></span>
                     </div>
 
                     <div class="col-md-4">
@@ -77,8 +90,8 @@
                         <input type="text"
                                asp-for="DefendantInfo.LastName"
                                class="form-control"
-                               required >
-                               <span asp-validation-for="DefendantInfo.LastName" class ="text-danger small"></span>
+                               required>
+                        <span asp-validation-for="DefendantInfo.LastName" class="text-danger small"></span>
                     </div>
 
                 </div>
@@ -94,11 +107,11 @@
                         </label>
 
                         <select asp-for="DefendantInfo.Suffix"
-                        asp-items ="Html.GetEnumSelectList<Suffix>()"
+                                asp-items="Html.GetEnumSelectList<Suffix>()"
                                 class="form-select">
 
                             <option value="">Select Suffix</option>
-                            
+
 
                         </select>
                     </div>
@@ -124,7 +137,7 @@
                         </label>
                         <input type="date"
                                asp-for="DefendantInfo.DateOfBirth"
-                               class="form-control" >
+                               class="form-control">
                     </div>
 
                     <div class="col-md-4">
@@ -133,11 +146,11 @@
                         </label>
 
                         <select asp-for="DefendantInfo.Gender"
-                        asp-items ="Html.GetEnumSelectList<Gender>()"
+                                asp-items="Html.GetEnumSelectList<Gender>()"
                                 class="form-select">
 
                             <option value="">Select gender</option>
-                            
+
                         </select>
                     </div>
 
@@ -171,7 +184,7 @@
                     </div>
 
                 </div>
-               
+
                 <!-- sixth Row -->
                 <div class="row mb-3">
 
@@ -201,7 +214,7 @@
                     </div>
 
                 </div>
-               
+
                 <div class="row mb-3">
 
                     <div class="col-md-8">
@@ -234,7 +247,7 @@
                         </label>
 
                         <select asp-for="DefendantInfo.State"
-                                asp-items ="Html.GetEnumSelectList<State>()"
+                                asp-items="Html.GetEnumSelectList<State>()"
                                 class="form-select">
 
                             <option value="">Select State</option>
@@ -253,7 +266,7 @@
                     </div>
 
                 </div>
-               
+
 
                 <div class="row mb-3">
 
@@ -291,8 +304,8 @@
                                accept="image/*">
                     </div>
 
-                </div> 
-              
+                </div>
+
                 <!-- Second Section -->
                 <div class="mt-5 pt-4 border-top">
 
@@ -320,7 +333,7 @@
 
                     </div>
 
-                     <h4 class="mb-4">
+                    <h4 class="mb-4">
                         Complainant Information
                     </h4>
 
@@ -369,44 +382,58 @@
                             </label>
 
                             <input type="email"
-                                  asp-for="DefendantInfo.MailingCity"
+                                   asp-for="DefendantInfo.MailingCity"
                                    class="form-control">
                         </div>
 
                     </div>
 
                 </div>
+            </fieldset>
 
-                    <!-- Buttons - Bottom Right -->
-    <div class="d-flex justify-content-end gap-2 mt-4">
+            <!-- Buttons - Bottom Right -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
 
-    @if (Model.DefendantInfo.Id == 0)
-    {
-        <button type="submit" class="btn btn-primary">
-            Save
-        </button>
-    }
-    else
-    {
-        <button type="submit" class="btn btn-warning">
-            Update
-        </button>
-    }
+                @if (Model.DefendantInfo.Id == 0)
+                {
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a asp-page="/Defendants/DefendantList" class="btn btn-secondary">Cancel</a>
+                }
+                else if (Model.IsEditMode)
+                {
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a asp-page="/Defendants/Defendant"
+                       asp-route-defendantId="@Model.DefendantInfo.Id"
+                       class="btn btn-secondary">Cancel</a>
+                }
+                else
+                {
+                    <a asp-page="/Defendants/Defendant"
+                       asp-route-defendantId="@Model.DefendantInfo.Id"
+                       asp-route-edit="true"
+                       class="btn btn-warning">Edit</a>
+                }
 
-    <a asp-page="/Defendants/DefendantList"
-       class="btn btn-secondary">
-        Cancel
-    </a>
+            </div>
 
-</div>  
-    </form>
+        </form>
 
-        </div>
     </div>
-
 </div>
 
-
-  @section Scripts {
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

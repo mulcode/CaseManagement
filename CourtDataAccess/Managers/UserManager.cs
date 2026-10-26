@@ -21,7 +21,7 @@ namespace CourtDataAccess.Managers
             _passwordHasher = new PasswordHasher<User>();
         }
 
-        public IEnumerable<User> GetAllUser()
+        public IList<User> GetAllUser()
         {
             try
             {
@@ -164,7 +164,7 @@ namespace CourtDataAccess.Managers
             }
         }
 
-        public IEnumerable<User> GetUsersByRole(int roleId)
+        public IList<User> GetUsersByRole(int roleId)
         {
             try
             {
@@ -183,7 +183,7 @@ namespace CourtDataAccess.Managers
             }
         }
 
-        public IEnumerable<User> GetUsersByRoleName(string roleName)
+        public IList<User> GetUsersByRoleName(string roleName)
         {
             try
             {

@@ -1,0 +1,89 @@
+﻿@page
+@model Court.Pages.Summons.SummonListModel
+@{
+}
+
+<div class="card shadow">
+    <div class="card-body p-4">
+
+        <partial name="_ComplaintTabs" model="Model.ComplaintTabs" />
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
+
+        <h4 class="mb-0 text-secondary mb-2">Summon List</h4>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <a asp-page="/Summons/SummonList"
+               asp-route-complaintId="@Model.ComplaintId"
+               class="btn btn-success">
+                Add New
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Arraignment Date</th>
+                        <th>Signed</th>
+                        <th>Sign Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                @* <tbody>
+                    @foreach (var item in Model.Arraignments)
+                    {
+                        <tr>
+                            <td>
+                                @(item.ArraignmentDate?.ToString("dd MMM yyyy") ?? "-")
+                            </td>
+
+                            <td>
+                                @(Model.Users.FirstOrDefault(u => u.Id == item.JudgeId)?.UserName ?? "-")
+                            </td>
+
+                            <td>
+                                @(item.SignDate?.ToString("dd MMM yyyy") ?? "-")
+                            </td>
+
+                            <td>
+                                @if (item.FinishAndLock)
+                                {
+                                    <a asp-page="/Arraignments/ArraignmentHearing"
+                                       asp-route-complaintId="@Model.ComplaintId"
+                                       asp-route-arraignmentId="@item.Id"
+                                       asp-route-mode="view"
+                                       class="btn btn-sm " style="background-color:#00BFFF; color: white;">
+                                        View
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-page="/Arraignments/ArraignmentHearing"
+                                       asp-route-complaintId="@Model.ComplaintId"
+                                       asp-route-arraignmentId="@item.Id"
+                                       class="btn btn-warning btn-sm">
+                                        Edit
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody> *@
+
+            </table>
+        </div>
+
+    </div>
+</div>

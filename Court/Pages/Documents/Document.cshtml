@@ -1,147 +1,132 @@
 ﻿@page
 @model Court.Pages.Documents.DocumentModel
+@using CourtDomain.Enums
 @{
     ViewData["Title"] = "Document";
+    Layout = "_DefendantLayout";
+    ViewData["DefendantId"] = Model.ComplaintTabs.DefendantId;
 }
-@using CourtDomain.Enums
 
+<div class="card shadow">
+    <div class="card-body p-4">
 
+        <partial name="_ComplaintTabs" model="Model.ComplaintTabs" />
 
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
 
-<div class="container mt-5" >
-    <div class="card shadow">
-        <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data">
 
-            <partial name="_ComplaintTabs"
-               model="new Court.ViewModels.ComplaintTabsViewModels
-               { ComplaintId = Model.DocumentInfo.ComplaintId,
-             IsDecisionSaved = Model.IsDecisionSaved,
-             PetitionId = Model.PetitionId,
-             IsPetitionFinished = Model.IsPetitionFinished
-              }" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-         @if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-        </button>
-    </div>
-}
- 
+            <input type="hidden" asp-for="DocumentInfo.ComplaintId" />
+            <input type="hidden" asp-for="DocumentInfo.Id" />
+            <input type="hidden" asp-for="ComplaintId" />
 
-  <form method="post" enctype="multipart/form-data">
+            <div class="row mb-3">
 
-     <input type="hidden" asp-for="DocumentInfo.ComplaintId" />
-     <input type="hidden" asp-for="DocumentInfo.Id" /> 
-
-    <div class="row mb-3">
-
-        <div class="col-md-4">
-            <label class="form-label">
-               Document Date<span style="color:red">*</span>
-            </label>
-
-            <input type="date"
-                   asp-for ="DocumentInfo.DocumentDate"
-                   class="form-control"
-                    />
-
-            <span asp-validation-for="DocumentInfo.DocumentDate"
-                  class="text-danger small"></span> 
-        </div>
-
-          <div class="col-md-4">
-            <label class="form-label">
-                Document Name<span style="color:red">*</span>
-            </label>
-
-            <input type="text"
-                 asp-for ="DocumentInfo.DocumentName"
-                   class="form-control"
-                    />
-
-            <span asp-validation-for="DocumentInfo.DocumentName"
-                  class="text-danger small"></span> 
-        </div>
-
-    </div>
-
-    <div class="row mb-3">
-
-        <div class="col-md-4">
-            <label class="form-label">
-                Document Type<span style="color:red">*</span>
-            </label>
-
-            <select asp-for="DocumentInfo.DocumentType"
-                    asp-items="Html.GetEnumSelectList<DocumentType>()"
-                    class="form-select">
-
-                <option value="">Select Document Type</option>
-
-            </select>
-
-            <span asp-validation-for="DocumentInfo.DocumentType"
-                  class="text-danger small"></span> 
-        </div>
-
-      
                 <div class="col-md-4">
+                    <label class="form-label">
+                        Document Date<span style="color:red">*</span>
+                    </label>
 
+                    <input type="date"
+                           asp-for="DocumentInfo.DocumentDate"
+                           class="form-control" />
+
+                    <span asp-validation-for="DocumentInfo.DocumentDate"
+                          class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">
+                        Document Name<span style="color:red">*</span>
+                    </label>
+
+                    <input type="text"
+                           asp-for="DocumentInfo.DocumentName"
+                           class="form-control" />
+
+                    <span asp-validation-for="DocumentInfo.DocumentName"
+                          class="text-danger small"></span>
+                </div>
+
+            </div>
+
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+                    <label class="form-label">
+                        Document Type<span style="color:red">*</span>
+                    </label>
+
+                    <select asp-for="DocumentInfo.DocumentType"
+                            asp-items="Html.GetEnumSelectList<DocumentType>()"
+                            class="form-select">
+
+                        <option value="">Select Document Type</option>
+
+                    </select>
+
+                    <span asp-validation-for="DocumentInfo.DocumentType"
+                          class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label">
                         Document<span style="color:red">*</span>
-
                     </label>
 
                     <input asp-for="DocFile"
-                             type="file"
-                             class="form-control"
-                             accept=".jpg,.jpeg,.png,.pdf" />
+                           type="file"
+                           class="form-control"
+                           accept=".jpg,.jpeg,.png,.pdf" />
 
-                             <span asp-validation-for="DocFile"
-                                  class="text-danger small"></span>
-                       </div>
-                    </div>
+                    <span asp-validation-for="DocFile"
+                          class="text-danger small"></span>
+                </div>
 
-    <div class="row mb-3">
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-label">
-                Comments
-            </label>
+            <div class="row mb-3">
 
-            <textarea class="form-control"
-             asp-for ="DocumentInfo.Comments"></textarea>
-        </div>
+                <div class="col-md-6">
+                    <label class="form-label">
+                        Comments
+                    </label>
 
-    </div>
+                    <textarea class="form-control"
+                              asp-for="DocumentInfo.Comments"></textarea>
+                </div>
 
-   <div class="d-flex justify-content-end gap-2 mt-4">
+            </div>
 
-    @if (Model.DocumentInfo.Id == 0)
-    {
-        <button type="submit" class="btn btn-primary">
-            Save
-        </button>
-    }
-    else
-    {
-        <button type="submit" class="btn btn-warning">
-            Update
-        </button>
-    }
+            <div class="d-flex justify-content-end gap-2 mt-4">
 
-    @* <a asp-page="/Documents/DocumentList"
-       class="btn btn-secondary">
-        Cancel
-    </a> *@
+                @if (Model.DocumentInfo.Id == 0)
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Update
+                    </button>
+                }
 
-</div>
+            </div>
 
-</form>
-        </div>
+        </form>
+
     </div>
 </div>

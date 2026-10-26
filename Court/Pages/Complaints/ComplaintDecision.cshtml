@@ -1,134 +1,128 @@
 ﻿@page
 @model Court.Pages.Complaints.ComplaintDecisionModel
+@using CourtDomain.Enums
 @{
     ViewData["Title"] = "Decision";
-}
-@using CourtDomain.Enums
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-        </button>
-    </div>
+    Layout = "_DefendantLayout";
+    ViewData["DefendantId"] = Model.ComplaintTabs.DefendantId;
 }
 
+<div class="card shadow">
+    <div class="card-body p-4">
 
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div class="alert alert-danger decision-warning">
-        @Model.ErrorMessage
-    </div>
-}
+        <partial name="_ComplaintTabs" model="Model.ComplaintTabs" />
 
-<div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-body p-4">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
 
-            <partial name="_ComplaintTabs"
-                     model="new Court.ViewModels.ComplaintTabsViewModels
-                     {
-                         ComplaintId = Model.ComplaintId,
-                         IsDecisionSaved = Model.IsDecisionSaved,
-                         PetitionId = Model.PetitionId,
-                         IsPetitionFinished = Model.IsPetitionFinished
-                     }" />
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger decision-warning">
+                @Model.ErrorMessage
+            </div>
+        }
 
-           
-           
+        <form method="post" enctype="multipart/form-data">
 
-            <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="ComplaintInfo.Id" />
 
-                <input type="hidden" asp-for="ComplaintInfo.Id" />
+            <div class="row mb-3">
 
-                <div class="row mb-3">
+                <!-- Magistrate Name -->
+                <div class="col-md-4">
+                    <label class="form-label">
+                        Magistrate Name<span style="color:red">*</span>
+                    </label>
 
-                    <div class="col-md-4">
-                        <label class="form-label">
-                            Magistrate Name<span style="color:red">*</span>
-                        </label>
-                       <select asp-for="ComplaintInfo.MagistrateId"
-        class="form-select"
-        id="magistrateName">
+                    <select asp-for="ComplaintInfo.MagistrateId"
+                            class="form-select"
+                            id="magistrateName">
 
-    <option value="0">-- Select User --</option>
+                        <option value="0">-- Select User --</option>
 
-    @foreach (var user in Model.Users)
-    {
-        <option value="@user.Id"
-                data-signature="@user.UserName">
-            @user.UserName
-        </option>
-    }
+                        @foreach (var user in Model.Users)
+                        {
+                            <option value="@user.Id"
+                                    data-signature="@user.UserName">
+                                @user.UserName
+                            </option>
+                        }
 
-</select>
+                    </select>
 
-<span asp-validation-for="ComplaintInfo.MagistrateId"
-      class="text-danger"></span>
-                    </div>
+                    <span asp-validation-for="ComplaintInfo.MagistrateId"
+                          class="text-danger"></span>
+                </div>
 
-                    <!-- Complainant Signature -->
-                    <div class="col-md-4">
-                        <label class="form-label">
-                            Magistrate Signature<span style="color:red">*</span>
-                        </label>
-                        <input asp-for="ComplaintInfo.MagistrateSignature"
-                               class="form-control signature-input"
-                               id="magistrateSignature" />
-                               <span asp-validation-for="ComplaintInfo.MagistrateSignature"
-                                     class="text-danger"></span>
-                    </div>
+                <!-- Magistrate Signature -->
+                <div class="col-md-4">
+                    <label class="form-label">
+                        Magistrate Signature<span style="color:red">*</span>
+                    </label>
 
+                    <input asp-for="ComplaintInfo.MagistrateSignature"
+                           class="form-control signature-input"
+                           id="magistrateSignature" />
 
-                    <!-- Complainant Phone -->
-                   
+                    <span asp-validation-for="ComplaintInfo.MagistrateSignature"
+                          class="text-danger"></span>
+                </div>
 
-                      <div class="col-md-4">
-                       <label class="form-label">
+                <!-- Date Received -->
+                <div class="col-md-4">
+                    <label class="form-label">
                         Date Received By Magistrate
-                       </label>
+                    </label>
 
-                        <input type="date"
-                           asp-for ="ComplaintInfo.ReceivedDateByMagistrate"
-                              class="form-control"/>
+                    <input type="date"
+                           asp-for="ComplaintInfo.ReceivedDateByMagistrate"
+                           class="form-control" />
 
-                              <span asp-validation-for="ComplaintInfo.ReceivedDateByMagistrate"
-                               class="text-danger small"></span>
-                    </div>
+                    <span asp-validation-for="ComplaintInfo.ReceivedDateByMagistrate"
+                          class="text-danger small"></span>
                 </div>
 
+            </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">
-                            Magistrate Decision<span style="color:red">*</span>
-                        </label>
-                        <select asp-for="ComplaintInfo.MagistrateDecision"
-                                asp-items="Html.GetEnumSelectList<Decision>()"
-                                class="form-select">
-                            <option value="">-- Select Decision --</option>
-                        </select>
-                        <span asp-validation-for="ComplaintInfo.MagistrateDecision"
-                               class="text-danger small"></span>
-                    </div>
+            <div class="row mb-3">
 
+                <div class="col-md-6">
+                    <label class="form-label">
+                        Magistrate Decision<span style="color:red">*</span>
+                    </label>
+
+                    <select asp-for="ComplaintInfo.MagistrateDecision"
+                            asp-items="Html.GetEnumSelectList<Decision>()"
+                            class="form-select">
+                        <option value="">-- Select Decision --</option>
+                    </select>
+
+                    <span asp-validation-for="ComplaintInfo.MagistrateDecision"
+                          class="text-danger small"></span>
                 </div>
 
-  
-                @if (Model.ComplaintInfo.ReadyForApproval && !Model.ComplaintInfo.MagistrateDecision.HasValue
-                && User.HasClaim("UserType", "Magistrate"))
-                {
-                    <div class="d-flex justify-content-end gap-2 mt-2">
-                        <button type="submit" class="btn btn-primary">
-                            Save
-                        </button>
-                    </div>
-                }
-            </form>
-        </div>
+            </div>
+
+            @if (Model.ComplaintInfo.ReadyForApproval && !Model.ComplaintInfo.MagistrateDecision.HasValue
+                 && User.HasClaim("UserType", "Magistrate"))
+            {
+                <div class="d-flex justify-content-end gap-2 mt-2">
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                </div>
+            }
+
+        </form>
+
     </div>
 </div>
 
@@ -154,7 +148,7 @@
     var magistrateName = document.getElementById("magistrateName");
 
     if (magistrateName) {
-        magistrateName.addEventListener("change", function () {
+        magistrateName.addEventListener("change", function() {
 
             var selectedOption =
                 this.options[this.selectedIndex];

@@ -7,7 +7,7 @@ namespace CourtDataAccess.Interfaces
 {
     public interface IDocument
     {
-        List<Document> GetAllDocument();
+        IList<Document> GetDocumentsByComplaint(int complaintId);
         Document GetDocument(int id);
         void AddDocument(Document document);
         void UpdateDocument(Document document);

@@ -5,6 +5,10 @@
 @{
     ViewData["Title"] = "Complaints";
 }
+@{
+    Layout = "_DefendantLayout";
+    ViewData["DefendantId"] = Model.DefendantId;
+}
 
 <div class="container mt-5">
     <div class="card shadow">
@@ -80,7 +84,7 @@
                                         <!-- View Button -->
                                         <a asp-page="/Complaints/Complaint"
                                            asp-route-complaintId="@complaint.Id"
-                                           class="btn btn-sm btn-warning">
+                                           class="btn btn-sm " style="background-color:#00BFFF; color: white;">
                                             View
                                         </a>
 

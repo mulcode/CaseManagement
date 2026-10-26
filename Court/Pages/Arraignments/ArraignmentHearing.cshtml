@@ -1,408 +1,398 @@
 ﻿@page
 @model Court.Pages.Arraignments.ArraignmentHearingModel
 @{
-  ViewData["Title"] = "Arraignment";
+    ViewData["Title"] = "Arraignment";
+    Layout = "_DefendantLayout";
+    ViewData["DefendantId"] = Model.ComplaintTabs.DefendantId;
 }
 
+<div class="card shadow">
+    <div class="card-body p-4">
 
+        <partial name="_ComplaintTabs" model="Model.ComplaintTabs" />
 
-<div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-body p-4">
+        <h4 class="mb-3 text-secondary">Arraignment Hearing</h4>
 
-          <partial name="_ComplaintTabs"
-             model="new Court.ViewModels.ComplaintTabsViewModels
-              {
-               ComplaintId = Model.ComplaintId,
-               IsDecisionSaved = Model.IsDecisionSaved,
-               PetitionId = Model.PetitionId,
-               IsPetitionFinished = Model.FinishAndLock
-              }" />
+        <form method="post">
 
-             <h4 class="mb-3 text-secondary">Arraignment Hearing</h4>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-             <form method="post">
-                 <input type="hidden" asp-for="ComplaintId" />
-                 <input type="hidden" asp-for="ArraignmentInfo.Id" />
-                 <input type="hidden" asp-for="ArraignmentInfo.PetitionId" />
-                 <input type="hidden" asp-for="ArraignmentInfo.FinishAndLock" />
+            <input type="hidden" asp-for="ComplaintId" />
+            <input type="hidden" asp-for="ArraignmentInfo.Id" />
+            <input type="hidden" asp-for="ArraignmentInfo.PetitionId" />
 
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="ArraignmentInfo.ArraignmentDate">
+                        Arraignment Date<span class="text-danger">*</span>
+                    </label>
+
+                    <input type="date" asp-for="ArraignmentInfo.ArraignmentDate"
+                           class="form-control" />
+
+                    <span asp-validation-for="ArraignmentInfo.ArraignmentDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="ArraignmentInfo.ArraignmentTime">
+                        Arraignment Time<span class="text-danger">*</span>
+                    </label>
+
+                    <input type="time"
+                           asp-for="ArraignmentInfo.ArraignmentTime"
+                           class="form-control" />
+                    <span asp-validation-for="ArraignmentInfo.ArraignmentTime"
+                          class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.WaivedArraignment"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.WaivedArraignment"
+                               class="form-check-label">
+                            Defendant Waived Arraignment
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.WasInformed"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.WasInformed"
+                               class="form-check-label">
+                            The defendant was informed that he/she has the right to remain silent, cannot be compelled to testify and cannot be prohibited from testifying; has the right to a speedy and public trial by jury; has the right to confront adverse witnesses, can call favorable witnesses, and can use subpoena power of the Court to compel witnesses to attend court proceedings.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.LegalCounsel"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.LegalCounsel"
+                               class="form-check-label">
+                            The defendant was informed that s/he has the right to an attorney, and if found indigent, will be appointed an attorney. The following legal counsel shall represent the Defendant in this matter :
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <select asp-for="ArraignmentInfo.AttorneyId"
+                            class="form-select">
+                        <option value=""></option>
+                        @foreach (var user in Model.Attorneys)
+                        {
+                            <option value="@user.Id"
+                                    data-signature="@user.UserName">
+                                @user.UserName
+                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.WaivedCounsel"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.WaivedCounsel"
+                               class="form-check-label">
+                            Defendant Waived Counsel
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.FoundGuilty"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.FoundGuilty"
+                               class="form-check-label">
+                            The defendant has been informed that if found guilty, s/he the right to appeal the judgment to the Cherokee Supreme Court
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.ReceivedCopyOfCharge"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.ReceivedCopyOfCharge"
+                               class="form-check-label">
+                            The defendant has received a copy of charges brought against him/her.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.InquiredOfDefendant"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.InquiredOfDefendant"
+                               class="form-check-label">
+                            The undersigned presiding Judge has read the charges to the Defendant, or has explained the substance of the charges to the Defendant in a manner understood by the Defendant, or has inquired of the Defendant if s/he has read the charges, and if so, that s/he understands the nature of charges
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.EnteredPlea"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.EnteredPlea"
+                               class="form-check-label">
+                            The Defendant has entered a plea of 'Not Guilty' on this date, reserving the right to change that plea at a later time without prejudice.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.BailStatus"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.BailStatus"
+                               class="form-check-label">
+                            The Defendant's bail status has been reviewed and shall remain the same or is modified as follows:
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <textarea class="form-control"
+                              asp-for="ArraignmentInfo.BailStatusDetails"
+                              rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.ExaminedCriminalProcess"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.ExaminedCriminalProcess"
+                               class="form-check-label">
+                            The undersigned presiding Judge has examined the criminal process and has determined that the charge is sufficient to charge an offense under the jurisdiction of the Cherokee Court.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.AdditionalCharges"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.AdditionalCharges"
+                               class="form-check-label">
+                            The Defendant's bail status has been reviewed and shall remain the same or is modified as follows:
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <textarea class="form-control"
+                              asp-for="ArraignmentInfo.ChargeDetails"
+                              rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="ArraignmentInfo.CourtDate"
+                               class="form-check-input">
+
+                        <label asp-for="ArraignmentInfo.CourtDate"
+                               class="form-check-label">
+                            The Defendant’s court date scheduled below:
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="text-secondary">Next Hearing Info</h5>
+
+            <div class="hearing-section">
+
+                <div class="p-3">
 
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label class="form-label" asp-for="ArraignmentInfo.ArraignmentDate">
-                                Arraignment Date<span class="text-danger">*</span>
+                            <label class="form-label" asp-for="ArraignmentInfo.NextHearingDate">
+                                Next Hearing Date<span class="text-danger">*</span>
                             </label>
 
-                            <input type="date" asp-for="ArraignmentInfo.ArraignmentDate"
+                            <input type="date" asp-for="ArraignmentInfo.NextHearingDate"
                                    class="form-control" />
 
-                            <span asp-validation-for="ArraignmentInfo.ArraignmentDate"
+                            <span asp-validation-for="ArraignmentInfo.NextHearingDate"
                                   class="text-danger"></span>
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label" asp-for="ArraignmentInfo.ArraignmentTime">
-                                Arraignment Time<span class="text-danger">*</span>
+                            <label class="form-label" asp-for="ArraignmentInfo.NextHearingTime">
+                                Next Hearing Time
                             </label>
 
                             <input type="time"
-                                   asp-for="ArraignmentInfo.ArraignmentTime"
+                                   asp-for="ArraignmentInfo.NextHearingTime"
                                    class="form-control" />
-                            <span asp-validation-for="ArraignmentInfo.ArraignmentTime"
+                        </div>
+                    </div>
+
+                    <h5 class="text-secondary">Judicial Info</h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label" asp-for="ArraignmentInfo.JudgeId">
+                                Judicial Name<span class="text-danger">*</span>
+                            </label>
+
+                            <select asp-for="ArraignmentInfo.JudgeId"
+                                    class="form-select"
+                                    id="judgeName">
+                                <option value="">-- Select User --</option>
+                                @foreach (var user in Model.Judges)
+                                {
+                                    <option value="@user.Id"
+                                            data-signature="@user.UserName">
+                                        @user.UserName
+                                    </option>
+                                }
+                            </select>
+
+                            <span asp-validation-for="ArraignmentInfo.JudgeId"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" asp-for="ArraignmentInfo.JudgeSignature">
+                                Judicial Signature<span class="text-danger">*</span>
+                            </label>
+
+                            <input asp-for="ArraignmentInfo.JudgeSignature"
+                                   class="form-control signature-input"
+                                   id="judgeSignature" />
+
+                            <span asp-validation-for="ArraignmentInfo.JudgeSignature"
                                   class="text-danger"></span>
                         </div>
                     </div>
 
-                    
-
-                    <div class="row mb-3 mt-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.WaivedArraignment"
-                                       class="form-check-input">
-
-                                <label asp-for="ArraignmentInfo.WaivedArraignment"
-                                       class="form-check-label">
-                                    Defendant Waived Arraignment
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.WasInformed"
-                                       class="form-check-input">
+                        <div class="col-md-4">
+                            <label class="form-label" asp-for="ArraignmentInfo.SignDate">
+                                Sign Date<span class="text-danger">*</span>
+                            </label>
 
-                                <label asp-for="ArraignmentInfo.WasInformed"
-                                       class="form-check-label">
-                                    The defendant was informed that he/she has the right to remain silent, cannot be compelled to testify and cannot be prohibited from testifying; has the right to a speedy and public trial by jury; has the right to confront adverse witnesses, can call favorable witnesses, and can use subpoena power of the Court to compel witnesses to attend court proceedings.
-                                </label>
-                            </div>
+                            <input type="date" asp-for="ArraignmentInfo.SignDate"
+                                   class="form-control" />
+
+                            <span asp-validation-for="ArraignmentInfo.SignDate"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" asp-for="ArraignmentInfo.SignTime">
+                                Sign Time
+                            </label>
+
+                            <input type="time"
+                                   asp-for="ArraignmentInfo.SignTime"
+                                   class="form-control" />
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.LegalCounsel"
-                                       class="form-check-input">
+                    <div class="form-check mt-3">
+                        <input asp-for="ArraignmentInfo.FinishAndLock"
+                               class="form-check-input" />
 
-                                <label asp-for="ArraignmentInfo.LegalCounsel"
-                                       class="form-check-label">
-                                    The defendant was informed that s/he has the right to an attorney, and if found indigent, will be appointed an attorney. The following legal counsel shall represent the Defendant in this matter :
-                                </label>
-                            </div>
-                        </div>
+                        <label asp-for="ArraignmentInfo.FinishAndLock"
+                               class="form-check-label">
+                            Finish and Lock
+                        </label>
                     </div>
 
-                    <div class="row mb-3">
-                       <div class="col-md-4">
-                       <select asp-for="ArraignmentInfo.AttorneyId"
-                             class="form-select">
-                         <option value=""></option>
-                          @foreach (var user in Model.Attorneys)
-                                        {
-                                            <option value="@user.Id"
-                                                    data-signature="@user.UserName">
-                                                @user.UserName
-                                            </option>
-                                        }
-                      </select>
-                    </div>
-                   </div>
+                </div>
+            </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.WaivedCounsel"
-                                       class="form-check-input">
+            <div class="d-flex justify-content-end gap-2 mt-4">
 
-                                <label asp-for="ArraignmentInfo.WaivedCounsel"
-                                       class="form-check-label">
-                                    Defendant Waived Counsel
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                @if (Model.ArraignmentInfo.FinishAndLock)
+                {
+                }
+                else if (Model.ArraignmentInfo.Id > 0)
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Update
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                }
 
-                      <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.FoundGuilty"
-                                       class="form-check-input">
+                <a asp-page="/Arraignments/ArraignmentHearings"
+                   asp-route-complaintId="@Model.ComplaintId"
+                   class="btn btn-secondary">
+                    Cancel
+                </a>
 
-                                <label asp-for="ArraignmentInfo.FoundGuilty"
-                                       class="form-check-label">
-                                    The defendant has been informed that if found guilty, s/he the right to appeal the judgment to the Cherokee Supreme Court
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+            </div>
 
-                     <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.ReceivedCopyOfCharge"
-                                       class="form-check-input">
+        </form>
 
-                                <label asp-for="ArraignmentInfo.ReceivedCopyOfCharge"
-                                       class="form-check-label">
-                                    The defendant has received a copy of charges brought against him/her.
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.InquiredOfDefendant"
-                                       class="form-check-input">
-
-                                <label asp-for="ArraignmentInfo.InquiredOfDefendant"
-                                       class="form-check-label">
-                                      The undersigned presiding Judge has read the charges to the Defendant, or has explained the substance of the charges to the Defendant in a manner understood by the Defendant, or has inquired of the Defendant if s/he has read the charges, and if so, that s/he understands the nature of charges
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                     <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.EnteredPlea"
-                                       class="form-check-input">
-
-                                <label asp-for="ArraignmentInfo.EnteredPlea"
-                                       class="form-check-label">
-                                      The Defendant has entered a plea of 'Not Guilty' on this date, reserving the right to change that plea at a later time without prejudice.
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.BailStatus"
-                                       class="form-check-input">
-
-                                <label asp-for="ArraignmentInfo.BailStatus"
-                                       class="form-check-label">
-                                     The Defendant's bail status has been reviewed and shall remain the same or is modified as follows:
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <textarea class="form-control"
-                                      asp-for="ArraignmentInfo.BailStatusDetails"
-                                      rows="3"></textarea>
-                        </div>
-                    </div>
-
-                      <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.ExaminedCriminalProcess"
-                                       class="form-check-input">
-
-                                <label asp-for="ArraignmentInfo.ExaminedCriminalProcess"
-                                       class="form-check-label">
-                                     The undersigned presiding Judge has examined the criminal process and has determined that the charge is sufficient to charge an offense under the jurisdiction of the Cherokee Court.
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                     <div class="row mb-3">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.AdditionalCharges"
-                                       class="form-check-input">
-
-                                <label asp-for="ArraignmentInfo.AdditionalCharges"
-                                       class="form-check-label">
-                                     The Defendant's bail status has been reviewed and shall remain the same or is modified as follows:
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <textarea class="form-control"
-                                      asp-for="ArraignmentInfo.ChargeDetails"
-                                      rows="3"></textarea>
-                        </div>
-                    </div>
-
-                     <div class="row mb-3">
-                        <div class="col-md-8">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="ArraignmentInfo.CourtDate"
-                                       class="form-check-input">
-
-                                <label asp-for="ArraignmentInfo.CourtDate"
-                                       class="form-check-label">
-                                    The Defendant’s court date scheduled below:
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h5 class="text-secondary">Next Hearing Info</h5>
-
-                    <div class="hearing-section">
-                       
-                        <div class="p-3">
-
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="ArraignmentInfo.NextHearingDate">
-                                        Next Hearing Date<span class="text-danger">*</span>
-                                    </label>
-
-                                    <input type="date" asp-for="ArraignmentInfo.NextHearingDate"
-                                           class="form-control" />
-
-                                    <span asp-validation-for="ArraignmentInfo.NextHearingDate"
-                                          class="text-danger"></span>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="ArraignmentInfo.NextHearingTime">
-                                        Next Hearing Time
-                                    </label>
-
-                                    <input type="time"
-                                           asp-for="ArraignmentInfo.NextHearingTime"
-                                           class="form-control" />
-                                </div>
-                            </div>
-
-
-                            <h5 class="text-secondary">Judicial Info</h5>
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="ArraignmentInfo.JudgeId">
-                                        Judicial Name<span class="text-danger">*</span>
-                                    </label>
-
-                                    <select asp-for="ArraignmentInfo.JudgeId"
-                                            class="form-select"
-                                            id="judgeName">
-                                        <option value="">-- Select User --</option>
-                                        @foreach (var user in Model.Judges)
-                                        {
-                                            <option value="@user.Id"
-                                                    data-signature="@user.UserName">
-                                                @user.UserName
-                                            </option>
-                                        }
-                                    </select>
-
-                                    <span asp-validation-for="ArraignmentInfo.JudgeId"
-                                          class="text-danger"></span>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="ArraignmentInfo.JudgeSignature">
-                                        Judicial Signature<span class="text-danger">*</span>
-                                    </label>
-
-                                    <input asp-for="ArraignmentInfo.JudgeSignature"
-                                           class="form-control signature-input"
-                                           id="judgeSignature" />
-
-                                    <span asp-validation-for="ArraignmentInfo.JudgeSignature"
-                                          class="text-danger"></span>
-                                </div>
-                            </div>
-
-                                <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="ArraignmentInfo.SignDate">
-                                        Sign Date<span class="text-danger">*</span>
-                                    </label>
-
-                                    <input type="date" asp-for="ArraignmentInfo.SignDate"
-                                           class="form-control" />
-
-                                    <span asp-validation-for="ArraignmentInfo.SignDate"
-                                          class="text-danger"></span>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="ArraignmentInfo.SignTime">
-                                        Sign Time
-                                    </label>
-
-                                    <input type="time"
-                                           asp-for="ArraignmentInfo.SignTime"
-                                           class="form-control" />
-                                </div>
-                            </div>
-
-
-
-                            <div class="form-check mt-3">
-                                <input asp-for="ArraignmentInfo.FinishAndLock"
-                                       class="form-check-input" />
-
-                                <label asp-for="ArraignmentInfo.FinishAndLock"
-                                       class="form-check-label">
-                                    Finish and Lock
-                                </label>
-                            </div>
-
-                        </div>
-                    </div>
-<div class="d-flex justify-content-end gap-2 mt-4">
-
-    @if (Model.ArraignmentInfo.FinishAndLock)
-    {
-    }
-    else if (Model.ArraignmentInfo.Id > 0)
-    {
-        <button type="submit" class="btn btn-secondary">
-            Update
-        </button>
-    }
-    else
-    {
-        <button type="submit" class="btn btn-primary">
-            Save
-        </button>
-    }
-      <a asp-page="/Arraignments/ArraignmentHearings"
-         asp-route-complaintId="@Model.ComplaintId"
-        class="btn btn-danger">
-        Cancel
-    </a>
-   
-</div>
-
-
-            </form>
-        </div>
     </div>
 </div>
 
@@ -412,6 +402,7 @@
         font-family: cursive;
         font-size: 20px;
     }
+
 </style>
 
 <script>
@@ -427,7 +418,7 @@
         if (!x.value) x.value = time;
     });
 
-    document.getElementById("judgeName")?.addEventListener("change", function () {
+    document.getElementById("judgeName")?.addEventListener("change", function() {
         document.getElementById("judgeSignature").value =
             this.options[this.selectedIndex].dataset.signature || "";
     });

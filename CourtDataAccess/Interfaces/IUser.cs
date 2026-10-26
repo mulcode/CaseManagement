@@ -4,9 +4,9 @@ namespace CourtDataAccess.Interfaces
 {
     public interface IUser
     {
-        IEnumerable<User> GetAllUser();
-        IEnumerable<User> GetUsersByRole(int roleId);
-        IEnumerable<User> GetUsersByRoleName(string roleName);
+        IList<User> GetAllUser();
+        IList<User> GetUsersByRole(int roleId);
+        IList<User> GetUsersByRoleName(string roleName);
         User GetUser(int userId);
 
         void AddUser(User user);

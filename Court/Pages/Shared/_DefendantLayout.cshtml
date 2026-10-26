@@ -1,0 +1,50 @@
+﻿@{
+    Layout = "_Layout";
+
+    int defendantId = 0;
+
+    if (ViewData["DefendantId"] != null)
+    {
+        defendantId = (int)ViewData["DefendantId"];
+    }
+}
+
+<div class="defendant-shell">
+    <aside class="defendant-sidebar-wrap">
+        <partial name="_DefendantSidebar" model="defendantId" />
+    </aside>
+
+    <section class="defendant-content">
+        @RenderBody()
+    </section>
+</div>
+
+<style>
+    .defendant-shell {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        align-items: stretch;
+        margin-left: calc(50% - 50vw);
+        width: 100vw;
+        max-width: 100vw;
+        min-height: calc(100vh - 120px);
+    }
+
+    .defendant-sidebar-wrap {
+        width: 220px;
+        background-color: #14213d;
+    }
+
+    .defendant-content {
+        min-width: 0;
+        padding: 24px;
+    }
+
+    html {
+        overflow-x: hidden;
+    }
+</style>
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

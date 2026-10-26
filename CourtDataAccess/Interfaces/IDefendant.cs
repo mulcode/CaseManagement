@@ -7,10 +7,10 @@ namespace CourtDataAccess.Interfaces
 {
     public interface IDefendant
     {
-        IEnumerable<Defendant> GetAllDefendant();
+        IList<Defendant> GetAllDefendant();
         Defendant GetDefendant(int id);
 
-        IEnumerable<Defendant> GetDefendants(int pageNumber, int pageSize);
+        IList<Defendant> GetDefendants(int pageNumber, int pageSize);
         int GetTotalDefendantCount();
 
 

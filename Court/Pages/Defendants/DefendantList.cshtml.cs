@@ -20,8 +20,8 @@ namespace Court.Pages.Defendants
             _logger = logger;
         }
 
-        public List<Defendant> Defendants { get; set; }
-            = new List<Defendant>();
+        public IList<Defendant> Defendants { get; set; } = new List<Defendant>();
+
 
         public int PageNumber { get; set; }
         public int PageSize { get; set; } = 5;
@@ -146,6 +146,7 @@ namespace Court.Pages.Defendants
                 return true;
             }
         }
+
     }
 }
 

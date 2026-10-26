@@ -19,17 +19,19 @@ namespace Court.Pages.Complaints
         }
 
         [BindProperty]
-        public List<Complaint> Complaints { get; set; } = new List<Complaint>();
+        public IList<Complaint> Complaints { get; set; }
 
+        [BindProperty]
         public int DefendantId { get; set; }
 
-        public IActionResult OnGet(int id)
+
+        public IActionResult OnGet(int defendantId)
         {
             try
             {
-                DefendantId = id;
+                DefendantId = defendantId;
 
-                Complaints = c_complaint.GetComplaintsByDefendant(id).ToList();
+                Complaints = c_complaint.GetComplaintsByDefendant(defendantId).ToList();
 
                 return Page();
             }
@@ -38,7 +40,7 @@ namespace Court.Pages.Complaints
                 _logger.LogError(
                     ex,
                     "Error loading complaints for defendant {DefendantId}",
-                    id);
+                    defendantId);
 
                 TempData["ErrorMessage"] =
                     "An error occurred while loading complaints.";

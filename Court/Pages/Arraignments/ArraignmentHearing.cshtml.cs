@@ -1,3 +1,4 @@
+using Court.ViewModels;
 using CourtDataAccess.Interfaces;
 using CourtDomain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,80 +11,74 @@ namespace Court.Pages.Arraignments
         private readonly IArraignment a_manager;
         private readonly IUser _user;
         private readonly IComplaint a_complaint;
+        private readonly IDefendant d_defendant;
         private readonly IPetition a_petition;
-        public ArraignmentHearingModel(IArraignment manager, IUser user,IComplaint complaint,IPetition petition)
+
+        public ArraignmentHearingModel(
+            IArraignment manager,
+            IUser user,
+            IComplaint complaint,
+            IDefendant defendant,
+            IPetition petition)
         {
             a_manager = manager;
             _user = user;
             a_complaint = complaint;
+            d_defendant = defendant;
             a_petition = petition;
+           
         }
 
         [BindProperty]
-        public ArraignmentHearing ArraignmentInfo { get; set; } = new ArraignmentHearing();
+        public ArraignmentHearing ArraignmentInfo { get; set; }
 
-        public IEnumerable<User> Users { get; set; } = new List<User>();
-        public IEnumerable<User> Judges { get; set; } = new List<User>();
-        public IEnumerable<User> Attorneys { get; set; } = new List<User>();
+        public IList<User> Users { get; set; } 
+        public IList<User> Judges { get; set; }
+        public IList<User> Attorneys { get; set; }
 
-        //[BindProperty(SupportsGet = true)]
+        [BindProperty]
         public int ComplaintId { get; set; }
-        public bool IsDecisionSaved { get; set; }
 
-        [BindProperty]
-        public int PetitionId { get; set; }
+ 
 
-        [BindProperty]
-        public bool FinishAndLock { get; set; }
+        public ComplaintTabsViewModels ComplaintTabs { get; set; }
 
-        public IActionResult OnGet(int complaintId, int? id)
+        public IActionResult OnGet(int complaintId, int arraignmentId)
         {
             ComplaintId = complaintId;
+
             Judges = _user.GetUsersByRole(3).ToList();
             Attorneys = _user.GetUsersByRole(4).ToList();
 
-            var complaint = a_complaint.GetComplaint(complaintId);
-            
-
-            IsDecisionSaved = complaint.MagistrateDecision.HasValue;
-
             var petition = a_petition.GetPetitionByComplaintId(complaintId);
-            
-            PetitionId = petition.Id;
-            FinishAndLock = petition.FinishAndLock;
-            //ArraignmentInfo.PetitionId = petition.Id;
+           
 
-            if (id.HasValue)
+            if (arraignmentId > 0)
             {
-                var arraignment = a_manager.GetArraignment(id.Value);
-
-                if (arraignment == null)
-                    return NotFound();
-
-                ArraignmentInfo = arraignment;
+                ArraignmentInfo = a_manager.GetArraignment(arraignmentId);
+                
             }
             else
             {
-                ArraignmentInfo.PetitionId = petition.Id;
+                ArraignmentInfo = new ArraignmentHearing { PetitionId = petition.Id };
             }
 
+            LoadTabs();
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            //var petition = a_petition.GetPetitionByComplaintId(ComplaintId);
 
-            
-            //PetitionId = petition.Id;
-            //FinishAndLock = petition.FinishAndLock;
-
-            ArraignmentInfo.PetitionId = PetitionId;
+            var petition = a_petition.GetPetitionByComplaintId(ComplaintId);
+            ArraignmentInfo.PetitionId = petition.Id;
 
             if (!ModelState.IsValid)
             {
                 Judges = _user.GetUsersByRole(3).ToList();
                 Attorneys = _user.GetUsersByRole(4).ToList();
+
+                LoadTabs();
 
                 return Page();
             }
@@ -91,11 +86,13 @@ namespace Court.Pages.Arraignments
             if (ArraignmentInfo.Id == 0)
             {
                 a_manager.AddArraignment(ArraignmentInfo);
+
                 TempData["SuccessMessage"] = "Arraignment Saved Successfully";
             }
             else
             {
                 a_manager.UpdateArraignment(ArraignmentInfo);
+
                 TempData["SuccessMessage"] = "Arraignment Updated Successfully";
             }
 
@@ -105,6 +102,25 @@ namespace Court.Pages.Arraignments
                 {
                     complaintId = ComplaintId
                 });
+        }
+        private void LoadTabs()
+        {
+            var complaint = a_complaint.GetComplaint(ComplaintId);
+            var defendant = d_defendant.GetDefendant(complaint.DefendantId);
+            var petition = a_petition.GetPetitionByComplaintId(ComplaintId);
+
+            ComplaintTabs = new ComplaintTabsViewModels
+            {
+                ComplaintId = complaint.Id,
+                DefendantId = complaint.DefendantId,
+                DefendantName = $"{complaint.Defendant?.FirstName} {complaint.Defendant?.LastName}".Trim(),
+                EnrolledNumber = defendant.EnrolledNumber,
+                Address = defendant.Address,
+                Gender = defendant.Gender,
+                IsDecisionSaved = complaint.MagistrateDecision.HasValue,
+                PetitionId = petition.Id,
+                IsPetitionFinished = petition.FinishAndLock
+            };
         }
     }
 }

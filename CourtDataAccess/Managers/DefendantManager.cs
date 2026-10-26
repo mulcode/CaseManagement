@@ -19,7 +19,7 @@ namespace CourtDataAccess.Managers
             _logger = logger;
         }
 
-        public IEnumerable<Defendant> GetAllDefendant()
+        public IList<Defendant> GetAllDefendant()
         {
             try
             {
@@ -49,7 +49,7 @@ namespace CourtDataAccess.Managers
             }
         }
 
-        public IEnumerable<Defendant> GetDefendants( int pageNumber,int pageSize)
+        public IList<Defendant> GetDefendants( int pageNumber,int pageSize)
         {
             try
             {

@@ -1,266 +1,255 @@
-﻿@* @page {"complaintId"} *@
-
-@page 
+﻿@page
 @model Court.Pages.Petitions.PetitionModel
+@using CourtDomain.Enums
 @{
     ViewData["Title"] = "Petition";
+    Layout = "_DefendantLayout";
+    ViewData["DefendantId"] = Model.ComplaintTabs.DefendantId;
 }
 
-@using CourtDomain.Enums
+<div class="card shadow">
+    <div class="card-body p-4">
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-        </button>
-    </div>
-}
+        <partial name="_ComplaintTabs" model="Model.ComplaintTabs" />
 
-<div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-body p-4">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
 
-            <partial name="_ComplaintTabs"
-                     model="new Court.ViewModels.ComplaintTabsViewModels
-                     {
-                        ComplaintId = Model.PetitionInfo.ComplaintId,
-                        IsDecisionSaved = Model.IsDecisionSaved,
-                        PetitionId = Model.PetitionInfo.Id,
-                        IsPetitionFinished = Model.PetitionInfo.FinishAndLock
-                         
-                     }" />
+        <form method="post">
 
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-             <form method="post">
+            <input type="hidden" asp-for="PetitionInfo.Id" />
+            <input type="hidden" asp-for="PetitionInfo.ComplaintId" />
 
-                 <input type="hidden" asp-for="PetitionInfo.Id" />
-                  <input type="hidden" asp-for="PetitionInfo.ComplaintId" />
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="PetitionInfo.PetitionDate">
+                        Petition Date<span class="text-danger">*</span>
+                    </label>
+
+                    <input type="date" asp-for="PetitionInfo.PetitionDate"
+                           class="form-control" />
+
+                    <span asp-validation-for="PetitionInfo.PetitionDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="PetitionInfo.PetitionTime">
+                        Petition Time<span class="text-danger">*</span>
+                    </label>
+
+                    <input type="time"
+                           asp-for="PetitionInfo.PetitionTime"
+                           class="form-control" />
+                </div>
+            </div>
+
+            <h5 class="mt-4">Undisciplined Allegations</h5>
+
+            <div class="row mb-3 mt-3">
+                <div class="col-md-8">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="PetitionInfo.Disobedient"
+                               class="form-check-input">
+
+                        <label asp-for="PetitionInfo.Disobedient"
+                               class="form-check-label">
+                            Was regularly disobedient to parent/guardian/custodian
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="PetitionInfo.FoundInUnlawfulPlace"
+                               class="form-check-input">
+
+                        <label asp-for="PetitionInfo.FoundInUnlawfulPlace"
+                               class="form-check-label">
+                            Was regularly found in unlawful place
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="PetitionInfo.RanAway"
+                               class="form-check-input">
+
+                        <label asp-for="PetitionInfo.RanAway"
+                               class="form-check-label">
+                            Ran away from home for more than 24 hours
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="PetitionInfo.AbsentFromSchool"
+                               class="form-check-input">
+
+                        <label asp-for="PetitionInfo.AbsentFromSchool"
+                               class="form-check-label">
+                            Unlawfully absent from school when under 16
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label" asp-for="PetitionInfo.SupportingFacts">
+                        State facts supporting every element of alleged offense
+                    </label>
+
+                    <textarea class="form-control"
+                              asp-for="PetitionInfo.SupportingFacts"
+                              rows="3"></textarea>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <!-- Decision Container -->
+            <div class="decision-section">
+                <div class="decision-header">
+                    Decision of Magistrate
+                </div>
+
+                <div class="p-3">
+
+                    <!-- Decision Selection -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <label class="form-label" asp-for="PetitionInfo.MagistrateDecision">
+                                Decision<span class="text-danger">*</span>
+                            </label>
+
+                            <select asp-for="PetitionInfo.MagistrateDecision"
+                                    asp-items="Html.GetEnumSelectList<Decision>()"
+                                    class="form-select">
+                                <option value="">-- Select Decision --</option>
+                            </select>
+
+                            <span asp-validation-for="PetitionInfo.MagistrateDecision"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label class="form-label" asp-for="PetitionInfo.PetitionDate">
-                                Petition Date<span class="text-danger">*</span>
+                            <label class="form-label" asp-for="PetitionInfo.MagistrateDecisionDate">
+                                Decision Date<span class="text-danger">*</span>
                             </label>
 
-                            <input type="date" asp-for="PetitionInfo.PetitionDate"
+                            <input type="date" asp-for="PetitionInfo.MagistrateDecisionDate"
                                    class="form-control" />
 
-                            <span asp-validation-for="PetitionInfo.PetitionDate"
+                            <span asp-validation-for="PetitionInfo.MagistrateDecisionDate"
                                   class="text-danger"></span>
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label" asp-for="PetitionInfo.PetitionTime">
-                                Petition Time<span class="text-danger">*</span>
+                            <label class="form-label" asp-for="PetitionInfo.MagistrateDecisionTime">
+                                Decision Time
                             </label>
 
                             <input type="time"
-                                   asp-for="PetitionInfo.PetitionTime"
+                                   asp-for="PetitionInfo.MagistrateDecisionTime"
                                    class="form-control" />
                         </div>
                     </div>
 
-                    <h5 class="mt-4">Undisciplined Allegations</h5>
-
-                    <div class="row mb-3 mt-3">
-                        <div class="col-md-8">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="PetitionInfo.Disobedient"
-                                       class="form-check-input">
-
-                                <label asp-for="PetitionInfo.Disobedient"
-                                       class="form-check-label">
-                                    Was regularly disobedient to parent/guardian/custodian
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="row mb-3">
-                        <div class="col-md-8">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="PetitionInfo.FoundInUnlawfulPlace"
-                                       class="form-check-input">
-
-                                <label asp-for="PetitionInfo.FoundInUnlawfulPlace"
-                                       class="form-check-label">
-                                    Was regularly found in unlawful place
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-8">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="PetitionInfo.RanAway"
-                                       class="form-check-input">
-
-                                <label asp-for="PetitionInfo.RanAway"
-                                       class="form-check-label">
-                                    Ran away from home for more than 24 hours
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-8">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       asp-for="PetitionInfo.AbsentFromSchool"
-                                       class="form-check-input">
-
-                                <label asp-for="PetitionInfo.AbsentFromSchool"
-                                       class="form-check-label">
-                                    Unlawfully absent from school when under 16
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label" asp-for="PetitionInfo.SupportingFacts">
-                                State facts supporting every element of alleged offense
+                        <div class="col-md-4">
+                            <label class="form-label" asp-for="PetitionInfo.MagistrateId">
+                                Magistrate Name<span class="text-danger">*</span>
                             </label>
 
-                            <textarea class="form-control"
-                                      asp-for="PetitionInfo.SupportingFacts"
-                                      rows="3"></textarea>
+                            <select asp-for="PetitionInfo.MagistrateId"
+                                    class="form-select"
+                                    id="magistrateName">
+                                <option value="">-- Select User --</option>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <option value="@user.Id"
+                                            data-signature="@user.UserName">
+                                        @user.UserName
+                                    </option>
+                                }
+                            </select>
+
+                            <span asp-validation-for="PetitionInfo.MagistrateId"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" asp-for="PetitionInfo.MagistrateSignature">
+                                Magistrate Signature<span class="text-danger">*</span>
+                            </label>
+
+                            <input asp-for="PetitionInfo.MagistrateSignature"
+                                   class="form-control signature-input"
+                                   id="magistrateSignature" />
+
+                            <span asp-validation-for="PetitionInfo.MagistrateSignature"
+                                  class="text-danger"></span>
                         </div>
                     </div>
 
-                    <hr class="my-4" />
+                    <div class="form-check mt-3">
+                        <input asp-for="PetitionInfo.FinishAndLock"
+                               class="form-check-input" />
 
-                    <!-- Decision Container -->
-                    <div class="decision-section">
-                        <div class="decision-header">
-                            Decision of Magistrate
-                        </div>
-
-                        <div class="p-3">
-
-                            <!-- Decision Selection -->
-                            <div class="row mb-4">
-                                <div class="col-md-8">
-                                    <label class="form-label" asp-for="PetitionInfo.MagistrateDecision">
-                                        Decision<span class="text-danger">*</span>
-                                    </label>
-
-                                    <select asp-for="PetitionInfo.MagistrateDecision"
-                                            asp-items="Html.GetEnumSelectList<Decision>()"
-                                            class="form-select">
-                                        <option value="">-- Select Decision --</option>
-                                    </select>
-                                    <span asp-validation-for="PetitionInfo.MagistrateDecision"
-                                          class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="PetitionInfo.MagistrateDecisionDate">
-                                        Decision Date<span class="text-danger">*</span>
-                                    </label>
-
-                                    <input type="date" asp-for="PetitionInfo.MagistrateDecisionDate"
-                                           class="form-control" />
-
-                                    <span asp-validation-for="PetitionInfo.MagistrateDecisionDate"
-                                          class="text-danger"></span>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="PetitionInfo.MagistrateDecisionTime">
-                                        Decision Time
-                                    </label>
-
-                                    <input type="time"
-                                           asp-for="PetitionInfo.MagistrateDecisionTime"
-                                           class="form-control" />
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="PetitionInfo.MagistrateId">
-                                        Magistrate Name<span class="text-danger">*</span>
-                                    </label>
-
-                                    <select asp-for="PetitionInfo.MagistrateId"
-                                            class="form-select"
-                                            id="magistrateName">
-                                        <option value="">-- Select User --</option>
-                                        @foreach (var user in Model.Users)
-                                        {
-                                            <option value="@user.Id"
-                                                    data-signature="@user.UserName">
-                                                @user.UserName
-                                            </option>
-                                        }
-                                    </select>
-
-                                    <span asp-validation-for="PetitionInfo.MagistrateId"
-                                          class="text-danger"></span>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label" asp-for="PetitionInfo.MagistrateSignature">
-                                        Magistrate Signature<span class="text-danger">*</span>
-                                    </label>
-
-                                    <input asp-for="PetitionInfo.MagistrateSignature"
-                                           class="form-control signature-input"
-                                           id="magistrateSignature" />
-
-                                    <span asp-validation-for="PetitionInfo.MagistrateSignature"
-                                          class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="form-check mt-3">
-                                <input asp-for="PetitionInfo.FinishAndLock"
-                                       class="form-check-input" />
-
-                                <label asp-for="PetitionInfo.FinishAndLock"
-                                       class="form-check-label">
-                                    Finish and Lock
-                                </label>
-                            </div>
-
-                        </div>
+                        <label asp-for="PetitionInfo.FinishAndLock"
+                               class="form-check-label">
+                            Finish and Lock
+                        </label>
                     </div>
 
-                </>
-
-                <div class="d-flex justify-content-end gap-2 mt-4">
-                    @if (Model.PetitionInfo.FinishAndLock)
-                    {
-                    }
-                    else if (Model.PetitionInfo.MagistrateDecision > 0)
-                    {
-                        <button type="submit" class="btn btn-secondary">
-                            Update
-                        </button>
-                    }
-                    else
-                    {
-                        <button type="submit" class="btn btn-primary">
-                            Save
-                        </button>
-                    }
-                    
                 </div>
+            </div>
 
-            </form>
-        </div>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                @if (Model.PetitionInfo.FinishAndLock)
+                {
+                }
+                else if (Model.PetitionInfo.MagistrateDecision > 0)
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Update
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                }
+            </div>
+
+        </form>
+
     </div>
 </div>
 
@@ -290,7 +279,7 @@
     var magistrateName = document.getElementById("magistrateName");
 
     if (magistrateName) {
-        magistrateName.addEventListener("change", function () {
+        magistrateName.addEventListener("change", function() {
             var selectedOption = this.options[this.selectedIndex];
             var signature = selectedOption.getAttribute("data-signature");
 

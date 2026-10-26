@@ -96,7 +96,7 @@ namespace CourtDataAccess.Managers
         }
 
 
-        public List<PetitionDto> GetPetitions(int pageNumber,int pageSize)
+        public IList<PetitionDto> GetPetitions(int pageNumber,int pageSize)
         {
             try
             {
@@ -134,36 +134,51 @@ namespace CourtDataAccess.Managers
             }
         }
 
-        public List<ComplaintWithoutPetitionDto> GetComplaintsWithoutPetition()
-        {
-            return _context.Database
-                .SqlQuery<ComplaintWithoutPetitionDto>(
-                    $"EXEC GetComplaintsWithoutPetition")
-                .ToList();
-        }
-
-    
-        public IEnumerable<ArraignemntDto> GetCourteCases()
+        public IList<ComplaintWithoutPetitionDto> GetComplaintsWithoutPetition(int pageNumber, int pageSize)
         {
             try
             {
                 var result = _context.Database
-                    .SqlQuery<ArraignemntDto>(
-                        $"EXEC dbo.GetUpcomingCourtCases")
-                    .ToList();
+               .SqlQuery<ComplaintWithoutPetitionDto>(
+                   $"EXEC GetComplaintsWithoutPetition")
+               .ToList();
 
-                _logger.LogInformation(
-                    "Upcoming court cases returned: {Count}",
-                    result.Count);
-
-                return result;
+                return result
+                         .OrderBy(d => d.ComplaintId)
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                _logger.LogError(ex, "Error getting upcoming court cases");
+                _logger.LogError(ex, "Error getting petitions");
                 throw;
             }
         }
+
+        public int GetAwatingPetitionCount()
+        {
+            try
+            {
+                return _context.Complaints
+                    .Where(c =>
+                        c.ReadyForApproval == true &&
+                        c.MagistrateDecision != null &&
+                        !_context.Petitions
+                            .Any(p => p.ComplaintId == c.Id))
+                    .Count();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error getting complaints awaiting petition.");
+
+                throw;
+            }
+        }
+
+     
 
     }
 }

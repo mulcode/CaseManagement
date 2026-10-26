@@ -15,12 +15,13 @@ namespace CourtDataAccess.Interfaces
         void UpdatePetition(Petition petition);
         Petition GetPetitionByComplaintId(int complaintId);
 
-        List<PetitionDto> GetPetitions(int pageNumber, int pageSize);
+        IList<PetitionDto> GetPetitions(int pageNumber, int pageSize);
         int GetPetitionCount();
 
-        List<ComplaintWithoutPetitionDto> GetComplaintsWithoutPetition();
+        IList<ComplaintWithoutPetitionDto> GetComplaintsWithoutPetition(int pageNumber, int pageSize);
+        int GetAwatingPetitionCount();
 
-        IEnumerable<ArraignemntDto> GetCourteCases();
+       
 
     }
 }

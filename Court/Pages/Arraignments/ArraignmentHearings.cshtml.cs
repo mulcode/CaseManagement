@@ -1,3 +1,4 @@
+using Court.ViewModels;
 using CourtDataAccess.Interfaces;
 using CourtDomain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,52 +10,54 @@ namespace Court.Pages.Arraignments
     {
         private readonly IArraignment a_arraignment;
         private readonly IComplaint a_complaint;
+        private readonly IDefendant d_defendant;
         private readonly IPetition a_petition;
         private readonly IUser a_user;
-        public ArraignmentHearingsModel(IArraignment arraignment, IComplaint complaint, IPetition petition, IUser user)
+        public ArraignmentHearingsModel(IArraignment arraignment, IComplaint complaint, IPetition petition, IUser user,IDefendant defendant)
         {
             a_arraignment = arraignment;
             a_complaint = complaint;
             a_petition = petition;
             a_user = user;
+            d_defendant = defendant;
         }
 
+        public IList<ArraignmentHearing> Arraignments { get; set; }
+        public IList<User> Users { get; set; }
         public int ComplaintId { get; set; }
-
-        [BindProperty]
-        public int PetitionId { get; set; }
-        public bool IsDecisionSaved { get; set; }
-
-        [BindProperty]
-        public bool IsPetitionFinished { get; set; }
-        public List<ArraignmentHearing> Arraignments { get; set; } = new();
-        public List<User> Users { get; set; } = new();
+        public ComplaintTabsViewModels ComplaintTabs { get; set; }
 
         public IActionResult OnGet(int complaintId)
         {
             ComplaintId = complaintId;
 
-            var complaint = a_complaint.GetComplaint(complaintId);
-
-            if (complaint == null)
-                return Content($"Complaint not found. ComplaintId = {complaintId}");
-
-            IsDecisionSaved = complaint.MagistrateDecision.HasValue;
-
             var petition = a_petition.GetPetitionByComplaintId(complaintId);
 
-            if (petition == null)
-                return Content($"Petition not found for ComplaintId = {complaintId}");
-
-            PetitionId = petition.Id;
-            IsPetitionFinished = petition.FinishAndLock;
-
-            Arraignments = a_arraignment
-                .GetArraignmentsByPetitionId(PetitionId);
+            Arraignments = a_arraignment.GetArraignmentsByPetitionId(petition.Id);
 
             Users = a_user.GetUsersByRole(3).ToList();
-
+            LoadTabs();
             return Page();
+        }
+
+        private void LoadTabs()
+        {
+            var complaint = a_complaint.GetComplaint(ComplaintId);
+            var defendant = d_defendant.GetDefendant(complaint.DefendantId);
+            var petition = a_petition.GetPetitionByComplaintId(ComplaintId);
+
+            ComplaintTabs = new ComplaintTabsViewModels
+            {
+                ComplaintId = complaint.Id,
+                DefendantId = complaint.DefendantId,
+                DefendantName = $"{complaint.Defendant?.FirstName} {complaint.Defendant?.LastName}".Trim(),
+                EnrolledNumber = defendant.EnrolledNumber,
+                Address = defendant.Address,
+                Gender = defendant.Gender,
+                IsDecisionSaved = complaint.MagistrateDecision.HasValue,
+                PetitionId = petition.Id,
+                IsPetitionFinished = petition.FinishAndLock
+            };
         }
     }
 }

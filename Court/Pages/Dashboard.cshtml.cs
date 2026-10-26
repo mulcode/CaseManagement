@@ -13,6 +13,7 @@ namespace Court.Pages
     {
         private readonly IComplaint d_complaint;
         private readonly IPetition d_petition;
+        private readonly IArraignment d_arraignment;
         private readonly ILogger<DashboardModel> _logger;
 
         public int SubmissionPageNumber { get; set; }
@@ -21,40 +22,43 @@ namespace Court.Pages
         public int DecisionTotalPage { get; set; }
         public int PetitionPageNumber { get; set; }
         public int PetitionTotalPage { get; set; }
+        public int PetitionAwatingPageNumber { get; set; }
+        public int PetitionAwatingTotalPage { get; set; }
+        public int ArraignmentPageNumber { get; set; }
+        public int ArraignmentTotalPage { get; set; }
 
         public int PageSize { get; set; } = 5;
         public int TotalAwatingSubmission { get; set; }
         public int TotalAwatingDecision { get; set; }
         public int TotalPetition { get; set; }
+        public int TotalAwatingPetition { get; set; }
+        public int TotalArraignment { get; set; }
 
         public DashboardModel(
             IComplaint complaint,
             ILogger<DashboardModel> logger,
+            IArraignment arraignment,
             IPetition petition)
         {
             d_complaint = complaint;
             d_petition = petition;
             _logger = logger;
+            d_arraignment = arraignment;
         }
 
-        public IEnumerable<DefendantComplaintDto> Defendants{ get; set; } = new List<DefendantComplaintDto>();
-        public IEnumerable<DefendantComplaintDto> Decisions{ get; set; } = new List<DefendantComplaintDto>();
+        public IList<DefendantComplaintDto> Defendants{ get; set; } 
+        public IList<DefendantComplaintDto> Decisions{ get; set; }
 
-        public List<ComplaintWithoutPetitionDto> ComplaintsWithoutPetition { get; set; } = new();
-        public IEnumerable<PetitionDto> Petitions { get; set; } = new List<PetitionDto>();
-        public List<ArraignemntDto> Arraignments { get; set; } = new();
+        public IList<ComplaintWithoutPetitionDto> ComplaintsWithoutPetition { get; set; } 
+        public IList<PetitionDto> Petitions { get; set; }
+        public IList<ArraignemntDto> Arraignments { get; set; } 
 
 
 
-        public IActionResult OnGet(int submissionPage = 1, int decisionPage = 1, int petitionPage = 1)
+        public IActionResult OnGet(int submissionPage = 1, int decisionPage = 1, int petitionPage = 1, int petitionAwatingPage = 1, int arraignmentPage = 1)
         {
             try
             {
-                 
-                ComplaintsWithoutPetition = d_petition.GetComplaintsWithoutPetition();
-              
-                Arraignments = d_petition.GetCourteCases().ToList();
-
                 // submission pagination
                 TotalAwatingSubmission = d_complaint.GetAwatingComplaintCount();
 
@@ -111,6 +115,44 @@ namespace Court.Pages
                 }
 
                 Petitions = d_petition.GetPetitions(PetitionPageNumber,PageSize).ToList();
+
+                //Awating Petition
+                TotalAwatingPetition = d_petition.GetAwatingPetitionCount();
+
+                PetitionAwatingTotalPage = (int)Math.Ceiling(
+                   (double)TotalAwatingPetition / PageSize);
+
+                PetitionAwatingPageNumber = Math.Max(1, petitionAwatingPage);
+
+                if (PetitionAwatingTotalPage > 0)
+                {
+                    PetitionAwatingPageNumber = Math.Min(PetitionAwatingPageNumber, PetitionAwatingTotalPage);
+                }
+                else
+                {
+                    PetitionAwatingPageNumber = 1;
+                }
+
+                ComplaintsWithoutPetition = d_petition.GetComplaintsWithoutPetition(PetitionAwatingPageNumber,PageSize).ToList();
+
+                // Arraignment Pagination
+                TotalArraignment = d_arraignment.ArraignmentCount();
+
+                ArraignmentTotalPage = (int)Math.Ceiling(
+                    (double)TotalArraignment / PageSize);
+
+                ArraignmentPageNumber = Math.Max(1, arraignmentPage);
+
+                if (ArraignmentTotalPage > 0)
+                {
+                    ArraignmentPageNumber = Math.Min(ArraignmentPageNumber, ArraignmentTotalPage);
+                }
+                else
+                {
+                    ArraignmentPageNumber = 1;
+                }
+
+                Arraignments = d_arraignment.GetCourteCases(ArraignmentPageNumber, PageSize).ToList();
 
                 return Page();
             }

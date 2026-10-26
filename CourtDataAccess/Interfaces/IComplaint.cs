@@ -7,11 +7,11 @@ namespace CourtDataAccess.Interfaces
 {
     public interface IComplaint
     {
-        IEnumerable<Complaint> GetComplaintsByDefendant(int defendantId);
-        IEnumerable<DefendantComplaintDto> GetAwatingComplaintSubmision(int pageNumber, int pageSize);
+        IList<Complaint> GetComplaintsByDefendant(int defendantId);
+        IList<DefendantComplaintDto> GetAwatingComplaintSubmision(int pageNumber, int pageSize);
         int GetAwatingComplaintCount();
 
-        IEnumerable<DefendantComplaintDto> GetAwatingDecision(int pageNumber, int pageSize);
+        IList<DefendantComplaintDto> GetAwatingDecision(int pageNumber, int pageSize);
         int GetAwatingDecisionCount();
         Complaint GetComplaint(int id);
         void AddComplaint(Complaint complaint);
