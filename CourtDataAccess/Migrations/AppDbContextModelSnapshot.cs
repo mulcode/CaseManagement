@@ -378,6 +378,43 @@ namespace CourtDataAccess.Migrations
                     b.ToTable("Petitions");
                 });
 
+            modelBuilder.Entity("CourtDomain.Models.ReturnOfService", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OfficerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfficerSignature")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("ReturnType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SummonId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan?>("Time")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SummonId");
+
+                    b.ToTable("ReturnOfServices");
+                });
+
             modelBuilder.Entity("CourtDomain.Models.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -392,6 +429,77 @@ namespace CourtDataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("CourtDomain.Models.Summon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AttorneyId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("CourtJurisdiction")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("HasCourtAppointedLawyer")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAdjudicatoryHearing")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAliasAndPluriesSummons")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFirstAppearance")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOrder")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JudicialESignature")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JudicialName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("JudicialOfficialId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("MustAttendScheduledHearings")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PetitionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SignDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan?>("SignTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("Time")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("WillBeAdvisedOfAppointedLawyer")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttorneyId");
+
+                    b.HasIndex("JudicialOfficialId");
+
+                    b.ToTable("Summons");
                 });
 
             modelBuilder.Entity("CourtDomain.Models.User", b =>
@@ -484,6 +592,34 @@ namespace CourtDataAccess.Migrations
                     b.Navigation("Complaint");
 
                     b.Navigation("Magistrate");
+                });
+
+            modelBuilder.Entity("CourtDomain.Models.ReturnOfService", b =>
+                {
+                    b.HasOne("CourtDomain.Models.Summon", "Summon")
+                        .WithMany()
+                        .HasForeignKey("SummonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Summon");
+                });
+
+            modelBuilder.Entity("CourtDomain.Models.Summon", b =>
+                {
+                    b.HasOne("CourtDomain.Models.User", "Attorney")
+                        .WithMany()
+                        .HasForeignKey("AttorneyId");
+
+                    b.HasOne("CourtDomain.Models.User", "JudicialOfficial")
+                        .WithMany()
+                        .HasForeignKey("JudicialOfficialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Attorney");
+
+                    b.Navigation("JudicialOfficial");
                 });
 #pragma warning restore 612, 618
         }

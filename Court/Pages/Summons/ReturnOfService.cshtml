@@ -1,0 +1,158 @@
+﻿@page
+@model Court.Pages.Summons.ReturnOfServiceModel
+
+@{
+    ViewData["Title"] = "Return of Service";
+    Layout = "_DefendantLayout";
+    ViewData["DefendantId"] = Model.ComplaintTabs.DefendantId;
+}
+
+<h1>Return of Service</h1>
+
+<div class="card shadow">
+    <div class="card-body p-3">
+
+        <partial name="_ComplaintTabs" model="Model.ComplaintTabs" />
+
+        <form method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="ComplaintId" />
+            <input type="hidden" asp-for="ReturnInfo.SummonId" />
+          
+            <div class="mb-3">
+                <label class="form-label d-block">
+                    Return Type:
+                </label>
+
+                <div class="d-flex flex-wrap gap-4">
+
+                    <div class="form-check">
+                        <input asp-for="ReturnInfo.ReturnType" type="radio"
+                               id="rt_served" value="Served" class="form-check-input" />
+                        <label class="form-check-label" for="rt_served">Served</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="ReturnInfo.ReturnType" type="radio"
+                               id="rt_attempted" value="Attempted" class="form-check-input" />
+                        <label class="form-check-label" for="rt_attempted">Attempted</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="ReturnInfo.ReturnType" type="radio"
+                               id="rt_dismissed" value="DismissedBeforeService" class="form-check-input" />
+                        <label class="form-check-label" for="rt_dismissed">Dismissed Before Service</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="ReturnInfo.ReturnType" type="radio"
+                               id="rt_death" value="DeathOfParty" class="form-check-input" />
+                        <label class="form-check-label" for="rt_death">Death Of Party</label>
+                    </div>
+
+                </div>
+                <span asp-validation-for="ReturnInfo.ReturnType"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ReturnInfo.Reason" class="form-label">
+                    Reason / Remarks <span class="text-danger">*</span>
+                </label>
+
+                <textarea asp-for="ReturnInfo.Reason"
+                          rows="3"
+                          maxlength="1000"
+                          class="form-control"
+                          placeholder="Required when the summons was not served (attempted, dismissed, death of party)."></textarea>
+
+                <div class="form-text">
+                    Explain why service was not completed. Optional when the summons was served.
+                </div>
+
+                <span asp-validation-for="ReturnInfo.Reason"
+                      class="text-danger"></span>
+            </div>
+
+      
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+                    <label asp-for="ReturnInfo.Date" class="form-label">
+                        Date <span class="text-danger">*</span>
+                    </label>
+
+                    <input asp-for="ReturnInfo.Date"
+                           type="date"
+                           class="form-control" />
+
+                    <span asp-validation-for="ReturnInfo.Date"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="ReturnInfo.Time" class="form-label">
+                        Time <span class="text-danger">*</span>
+                    </label>
+
+                    <input asp-for="ReturnInfo.Time"
+                           type="time"
+                           class="form-control" />
+
+                    <span asp-validation-for="ReturnInfo.Time"
+                          class="text-danger"></span>
+                </div>
+
+            </div>
+
+         
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+                    <label asp-for="ReturnInfo.OfficerName" class="form-label">
+                        Officer Name <span class="text-danger">*</span>
+                    </label>
+
+                    <input asp-for="ReturnInfo.OfficerName"
+                           class="form-control" />
+
+                    <span asp-validation-for="ReturnInfo.OfficerName"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="ReturnInfo.OfficerSignature" class="form-label">
+                        Officer eSignature <span class="text-danger">*</span>
+                    </label>
+
+                    <input asp-for="ReturnInfo.OfficerSignature"
+                           class="form-control"
+                           style="font-family: cursive; font-style: italic;" />
+
+                    <span asp-validation-for="ReturnInfo.OfficerSignature"
+                          class="text-danger"></span>
+                </div>
+
+            </div>
+
+           
+            <div class="d-flex justify-content-end gap-2 mt-4 border-top pt-2">
+
+                <a asp-page="/Summons/AddEditSummons"
+                   asp-route-complaintId="@Model.ComplaintId"
+                   asp-route-summonId="@Model.ReturnInfo.SummonId"
+                   class="btn btn-light border">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    Save
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+</div>

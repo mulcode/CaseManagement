@@ -31,18 +31,12 @@ namespace Court.Pages.Arraignments
 
         [BindProperty]
         public ArraignmentHearing ArraignmentInfo { get; set; }
-
-        public IList<User> Users { get; set; } 
         public IList<User> Judges { get; set; }
         public IList<User> Attorneys { get; set; }
 
         [BindProperty]
         public int ComplaintId { get; set; }
-
- 
-
         public ComplaintTabsViewModels ComplaintTabs { get; set; }
-
         public IActionResult OnGet(int complaintId, int arraignmentId)
         {
             ComplaintId = complaintId;
@@ -60,7 +54,10 @@ namespace Court.Pages.Arraignments
             }
             else
             {
-                ArraignmentInfo = new ArraignmentHearing { PetitionId = petition.Id };
+                ArraignmentInfo = new ArraignmentHearing
+                {
+                    PetitionId = petition.Id
+                };
             }
 
             LoadTabs();

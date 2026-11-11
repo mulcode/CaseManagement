@@ -11,7 +11,7 @@ namespace CourtDomain.Models
         public int PetitionId { get; set; }
 
         [Required(ErrorMessage = "Date is required")]
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
         public TimeSpan? Time { get; set; }
 
         public bool IsAliasAndPluriesSummons { get; set; }
@@ -27,12 +27,12 @@ namespace CourtDomain.Models
 
         public bool HasCourtAppointedLawyer { get; set; }
         public int? AttorneyId { get; set; }
-        public virtual User Attorney { get; set; }
+        public virtual User? Attorney { get; set; }
         public bool WillBeAdvisedOfAppointedLawyer { get; set; }
 
         [Required(ErrorMessage = "Judicial Name is required")]
-        public int JudicialOfficialId { get; set; }
-        public virtual User JudicialOfficial { get; set; }
+        public int? JudicialOfficialId { get; set; }
+        public virtual User? JudicialOfficial { get; set; }
         public string? JudicialName { get; set; }
         public string? JudicialESignature { get; set; }
         public DateTime? SignDate { get; set; }

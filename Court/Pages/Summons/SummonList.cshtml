@@ -1,6 +1,9 @@
 ﻿@page
 @model Court.Pages.Summons.SummonListModel
 @{
+    ViewData["Title"] = "Summon";
+    Layout = "_DefendantLayout";
+    ViewData["DefendantId"] = Model.ComplaintTabs.DefendantId;
 }
 
 <div class="card shadow">
@@ -19,10 +22,21 @@
             </div>
         }
 
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
+
         <h4 class="mb-0 text-secondary mb-2">Summon List</h4>
         <div class="d-flex justify-content-between align-items-center mb-3">
 
-            <a asp-page="/Summons/SummonList"
+            <a asp-page="/Summons/AddEditSummons"
                asp-route-complaintId="@Model.ComplaintId"
                class="btn btn-success">
                 Add New
@@ -34,23 +48,18 @@
 
                 <thead class="table-light">
                     <tr>
-                        <th>Arraignment Date</th>
-                        <th>Signed</th>
+                        <th>Summon Date</th>
                         <th>Sign Date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
 
-                @* <tbody>
-                    @foreach (var item in Model.Arraignments)
+                <tbody>
+                    @foreach (var item in Model.Summons)
                     {
                         <tr>
                             <td>
-                                @(item.ArraignmentDate?.ToString("dd MMM yyyy") ?? "-")
-                            </td>
-
-                            <td>
-                                @(Model.Users.FirstOrDefault(u => u.Id == item.JudgeId)?.UserName ?? "-")
+                                @(item.Date?.ToString("dd MMM yyyy") ?? "-")
                             </td>
 
                             <td>
@@ -58,11 +67,11 @@
                             </td>
 
                             <td>
-                                @if (item.FinishAndLock)
+                                @if (item.IsCompleted)
                                 {
-                                    <a asp-page="/Arraignments/ArraignmentHearing"
+                                    <a asp-page="/Summons/AddEditSummons"
                                        asp-route-complaintId="@Model.ComplaintId"
-                                       asp-route-arraignmentId="@item.Id"
+                                       asp-route-summonId="@item.Id"
                                        asp-route-mode="view"
                                        class="btn btn-sm " style="background-color:#00BFFF; color: white;">
                                         View
@@ -70,9 +79,9 @@
                                 }
                                 else
                                 {
-                                    <a asp-page="/Arraignments/ArraignmentHearing"
+                                    <a asp-page="/Summons/AddEditSummons"
                                        asp-route-complaintId="@Model.ComplaintId"
-                                       asp-route-arraignmentId="@item.Id"
+                                       asp-route-summonId="@item.Id"
                                        class="btn btn-warning btn-sm">
                                         Edit
                                     </a>
@@ -80,10 +89,11 @@
                             </td>
                         </tr>
                     }
-                </tbody> *@
+                </tbody>
 
             </table>
         </div>
 
     </div>
 </div>
+

@@ -50,7 +50,7 @@ namespace Court.Pages.Arraignments
             {
                 ComplaintId = complaint.Id,
                 DefendantId = complaint.DefendantId,
-                DefendantName = $"{complaint.Defendant?.FirstName} {complaint.Defendant?.LastName}".Trim(),
+                DefendantName = $"{defendant.FirstName} {defendant.LastName}".Trim(),
                 EnrolledNumber = defendant.EnrolledNumber,
                 Address = defendant.Address,
                 Gender = defendant.Gender,

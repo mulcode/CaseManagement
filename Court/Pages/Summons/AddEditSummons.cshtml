@@ -1,0 +1,433 @@
+﻿@page
+@model Court.Pages.Summons.AddEditSummonsModel
+@{
+    ViewData["Title"] = "Summon";
+    Layout = "_DefendantLayout";
+    ViewData["DefendantId"] = Model.ComplaintTabs.DefendantId;
+}
+
+<div class="card shadow">
+    <div class="card-body p-4">
+
+        <partial name="_ComplaintTabs" model="Model.ComplaintTabs" />
+
+        <h4 class="mb-3 text-secondary">Summon</h4>
+
+        <form method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="ComplaintId" />
+            <input type="hidden" asp-for="SummonInfo.Id" />
+            <input type="hidden" asp-for="SummonInfo.PetitionId" />
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="SummonInfo.Date">
+                         Date<span class="text-danger">*</span>
+                    </label>
+
+                    <input type="date" asp-for="SummonInfo.Date"
+                           class="form-control" />
+
+                    <span asp-validation-for="SummonInfo.Date"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="SummonInfo.Time">
+                         Time
+                    </label>
+
+                    <input type="time"
+                           asp-for="SummonInfo.Time"
+                           class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="SummonInfo.IsAliasAndPluriesSummons"
+                               class="form-check-input">
+
+                        <label asp-for="SummonInfo.IsAliasAndPluriesSummons"
+                               class="form-check-label">
+                            Alias and Pluries Summons
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <h4>SUMMONS AND NOTICE OF HEARING</h4>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="SummonInfo.IsOrder"
+                               class="form-check-input">
+
+                        <label asp-for="SummonInfo.IsOrder"
+                               class="form-check-label">
+                            1.Order
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="SummonInfo.IsFirstAppearance"
+                               class="form-check-input">
+
+                        <label asp-for="SummonInfo.IsFirstAppearance"
+                               class="form-check-label">
+                            2. First Appearance: At this hearing the Court will inform the Juvenile of the allegations, appoint counsel for the Juvenile if the juvenile does not have counsel, schedule a probable cause hearing if one is required, and inform the parent, guardian, or custodian that they must attend hearings in this matter
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="SummonInfo.IsAdjudicatoryHearing"
+                               class="form-check-input">
+
+                        <label asp-for="SummonInfo.IsAdjudicatoryHearing"
+                               class="form-check-label">
+                            3. Hearing on the petition (Adjudicatory Hearing): At this hearing the Court will hear evidence and determine whether the allegations in the attached petition are true.
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <h4>
+                NOTICE TO THE JUVENILE'S PARENTS(S), GUARDIANS(S), OR CUSTODIAN(S)
+            </h4>
+            <h6>YOUR FAILURE TO APPEAR IN COURT FOR A SCHEDULED HEARING OR TO COMPLY WITH AN ORDER OF THE COURT MAY RESULT IN A FINDING OF CRIMINAL CONTEMPT. A PERSON HELD IN CRIMINAL CONTEMPT MAY BE SUBJECT TO IMPRISONMENT OF UP TO THIRTY (30) DAYS, A FINE NOT TO EXCEED FIVE HUNDRED DOLLARS ($500), OR BOTH.</h6>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="SummonInfo.MustAttendScheduledHearings"
+                               class="form-check-input">
+
+                        <label asp-for="SummonInfo.MustAttendScheduledHearings"
+                               class="form-check-label">
+                            You are required to attend scheduled hearings in this case, and you are responsible for bringing the juvenile before the Court at any hearing the juvenile is required to attend.
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="SummonInfo.CourtJurisdiction"
+                               class="form-check-input">
+
+                        <label asp-for="SummonInfo.CourtJurisdiction"
+                               class="form-check-label">
+                            Upon service of this Summons the Court obtains jurisdiction over you, and your failure to appear or bring the juvenile before the Court without reasonable cause or to comply with any order of the Court may cause teh Court to issue a show Cause order for contempt.
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <h4>NOTICE OF Defendant'S RIGHT TO A LAWYER</h4>
+            <p>The defendant has a right to be represented by a lawyer at all stages of this proceeding.</p>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="SummonInfo.HasCourtAppointedLawyer"
+                               class="form-check-input">
+
+                        <label asp-for="SummonInfo.HasCourtAppointedLawyer"
+                               class="form-check-label">
+                            Upon service of this Summons the Court obtains jurisdiction over you, and your failure to appear or bring the juvenile before the Court without reasonable cause or to comply with any order of the Court may cause teh Court to issue a show Cause order for contempt.
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3 d-none" id="attorneySection">
+                <div class="col-md-6">
+                    <label asp-for="SummonInfo.AttorneyId" class="form-label">Attorney</label>
+                    <select asp-for="SummonInfo.AttorneyId" class="form-select">
+                        <option value="">-- Select Attorney --</option>
+                        @foreach (var attorney in Model.Attorneys)
+                        {
+                            <option value="@attorney.Id">@attorney.UserName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="SummonInfo.AttorneyId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input type="checkbox"
+                               asp-for="SummonInfo.WillBeAdvisedOfAppointedLawyer"
+                               class="form-check-input"
+                               id="hasLawyer">
+
+                        <label asp-for="SummonInfo.WillBeAdvisedOfAppointedLawyer"
+                               class="form-check-label">
+                            The Defendant will be advised promptly of the name and address of the court-appointed lawyer
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <h4>NOTICE</h4>
+            <p>
+                If the Court determines at an adjudicatory hearing (whether scheduled above or at a later time) that the allegations of the petition are true, the Court will conduct a dispositional hearing and may enter orders that affect substantial rights of the juvenile and of the parent, guardian, or custodian, including others that:
+            </p>
+            <ul class="border-bottom">
+                <li>affect the juvenile's custody;</li>
+                <li>impose conditions on the juvenile;</li>
+                <li>require that the juvenile receive medical, psychiatric, psychological, or other treatment and that the parent participate in the treatment;</li>
+                <li>require the parent to undergo psychiatric, psychological, or other treatment or counseling;</li>
+                <li>order the parent to pay for treatment that is ordered for the juvenile or the parent;</li>
+                <li>order the parent to pay support for the juvenile for any period the juvenile does not reside with the parent;</li>
+                <li>
+                    order the parent to pay attorney's fees or other fees or expenses as determined by the Court.
+                </li>
+            </ul>
+            <h4>Judicial Info</h4>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label" asp-for="SummonInfo.JudicialOfficialId">
+                        Judicial Official<span class="text-danger">*</span>
+                    </label>
+
+                    <select asp-for="SummonInfo.JudicialOfficialId"
+                            class="form-select"
+                            id="judgeName">
+                        <option value="">-- Select User --</option>
+                        @foreach (var user in Model.Magistrates)
+                        {
+                            <option value="@user.Id" data-signature="@user.UserName">
+                                @user.UserName
+                            </option>
+                        }
+                    </select>
+
+                    <span asp-validation-for="SummonInfo.JudicialOfficialId"
+                          class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="SummonInfo.JudicialName">
+                        Judicial Name
+                    </label>
+                    <input asp-for="SummonInfo.JudicialName"
+                           class="form-control"
+                           id="judgeNameText" />
+                    <span asp-validation-for="SummonInfo.JudicialName"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="SummonInfo.JudicialESignature">
+                        Judicial Signature
+                    </label>
+                    <input asp-for="SummonInfo.JudicialESignature"
+                           class="form-control signature-input"
+                           id="judgeSignature" />
+                    <span asp-validation-for="SummonInfo.JudicialESignature"
+                          class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="SummonInfo.SignDate">
+                        Sign Date<span class="text-danger">*</span>
+                    </label>
+
+                    <input type="date" asp-for="SummonInfo.SignDate"
+                           class="form-control" />
+
+                    <span asp-validation-for="SummonInfo.SignDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" asp-for="SummonInfo.SignTime">
+                        Sign Time
+                    </label>
+
+                    <input type="time"
+                           asp-for="SummonInfo.SignTime"
+                           class="form-control" />
+                </div>
+            </div>
+            <div class="form-check mt-3">
+                <input asp-for="SummonInfo.IsCompleted"
+                       class="form-check-input" />
+
+                <label asp-for="SummonInfo.IsCompleted"
+                       class="form-check-label">
+                    Mark as Completed
+                </label>
+
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+
+                @if (Model.SummonInfo.IsCompleted)
+                {
+                }
+                else if (Model.SummonInfo.Id > 0)
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Update
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                }
+
+                <a asp-page="/Summons/SummonList"
+                   asp-route-complaintId="@Model.ComplaintId"
+                   class="btn btn-light">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@if (Model.SummonInfo.Id > 0)
+{
+<div class="card shadow">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+           
+            <div class="d-flex align-items-center gap-2">
+              
+                @if (!Model.SummonInfo.IsCompleted || Model.ReturnOfServices.Count == 0)
+                {
+                    <a asp-page="/Summons/ReturnOfService"
+                       asp-route-complaintId="@Model.ComplaintId"
+                       asp-route-summonId="@Model.SummonInfo.Id"
+                       class="btn btn-success">
+                      Add Return of service
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Return Type</th>
+                        <th>Date of service</th>
+                        <th>Officer Name</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model.ReturnOfServices.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">
+                                No return of service recorded yet.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var returnInfo in Model.ReturnOfServices)
+                        {
+                            <tr>
+                                <td>@returnInfo.ReturnType</td>
+                                <td>
+                                    @(returnInfo.Date?.ToString("dd MMM yyyy") ?? "-")
+                                    @if (returnInfo.Time.HasValue)
+                                    {
+                                        <span class="text-muted">
+                                            @returnInfo.Time.Value.ToString(@"hh\:mm")
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(returnInfo.OfficerName) ? "-" : returnInfo.OfficerName)
+                                </td>
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(returnInfo.Reason) ? "-" : returnInfo.Reason)
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+}
+
+
+
+<style>
+    .signature-input {
+        font-style: italic;
+        font-family: cursive;
+        font-size: 20px;
+    }
+
+</style>
+
+<script>
+    // for date time
+    const now = new Date();
+    const date = now.toLocaleDateString('en-CA');
+    const time = now.toTimeString().slice(0, 5);
+
+    document.querySelectorAll('input[type="date"]').forEach(x => {
+        if (!x.value) x.value = date;
+    });
+
+    document.querySelectorAll('input[type="time"]').forEach(x => {
+        if (!x.value) x.value = time;
+    });
+
+
+    document.getElementById("judgeNameText")?.addEventListener("change", function () {
+        document.getElementById("judgeSignature").value =
+            this.options[this.selectedIndex].dataset.signature || "";
+    });
+
+    //for attorney dropdown
+    document.addEventListener('DOMContentLoaded', function () {
+        const lawyerCheckbox = document.getElementById('SummonInfo_HasCourtAppointedLawyer');
+        const attorneySection = document.getElementById('attorneySection');
+        const attorneySelect = attorneySection.querySelector('select');
+
+        function toggleAttorney() {
+            if (lawyerCheckbox.checked) {
+                attorneySection.classList.remove('d-none');
+            } else {
+                attorneySection.classList.add('d-none');
+                attorneySelect.value = '';
+            }
+        }
+
+        lawyerCheckbox.addEventListener('change', toggleAttorney);
+        toggleAttorney();
+    });
+</script>
+

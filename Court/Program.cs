@@ -17,6 +17,8 @@ builder.Services.AddScoped<IComplaint, ComplaintManager>();
 builder.Services.AddScoped<IDocument, DocumentManager>();
 builder.Services.AddScoped<IPetition, PetitionManager>();
 builder.Services.AddScoped<IArraignment, ArraignmentManager>();
+builder.Services.AddScoped<ISummon, SummonManager>();
+builder.Services.AddScoped<IReturnOfService, ReturnOfServiceManager>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();

@@ -128,7 +128,11 @@
         <li class="nav-item">
             <a class="nav-link @(
                currentPage?.Equals(
-                   "/Summons/Addsummons",
+                   "/Summons/AddEditSummons",
+                   StringComparison.OrdinalIgnoreCase) == true
+               ||
+               currentPage?.Equals(
+                   "/Summons/ReturnOfService",
                    StringComparison.OrdinalIgnoreCase) == true
                ||
                currentPage?.Equals(
